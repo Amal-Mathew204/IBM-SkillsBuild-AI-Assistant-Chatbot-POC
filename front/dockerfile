@@ -1,0 +1,28 @@
+# Stage 1: Build the Vue app using Node.js
+FROM node:18 AS builder
+
+WORKDIR /app
+
+# Install dependencies
+COPY package.json package-lock.json /app/
+
+RUN npm install
+
+# Copy the project files
+COPY . /app/
+
+#for production
+# # Build the Vue app
+# RUN npm run build
+# # Install a simple HTTP server to serve the built app
+# RUN npm install -g http-server
+# # Expose the port the app will run on
+# EXPOSE 3000
+# # Serve the app using http-server
+# CMD ["http-server", "dist", "-a", "0.0.0.0", "-p", "3000"]
+
+#for development
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
