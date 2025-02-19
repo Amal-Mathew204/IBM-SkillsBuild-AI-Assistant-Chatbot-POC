@@ -2,7 +2,7 @@
 
 # Create the user
 mongosh --host $MONGO_HOST --port $MONGO_PORT -u $MONGO_ROOT_USERNAME -p $MONGO_ROOT_PASSWORD --authenticationDatabase admin <<EOF
-use $MONGO_CHATBOT_DATABASE
+use admin
 db.createUser({
   user: "$MONGO_USER",
   pwd: "$MONGO_PASSWORD",
@@ -10,4 +10,4 @@ db.createUser({
 })
 EOF
 
-echo "User $MONGO_USER created successfully in database $MONGO_CHATBOT_DATABASE"
+echo "User $MONGO_USER created successfully in database admin"
