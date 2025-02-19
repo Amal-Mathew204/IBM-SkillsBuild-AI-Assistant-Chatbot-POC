@@ -1,0 +1,4 @@
+#ignore os files
+.DS_Store
+# Editor directories and files
+.vscode/
