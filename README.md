@@ -12,14 +12,11 @@ Ensure you have the following installed:
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## Navigate to Project
 
-```sh
-# Navigate to the root path of project
-cd /path/to/your/project
-```
 ## Run the Project
+Note: must be in project root directory to run the following commands
 ```sh
+
 # Stop and Remove Existing Containers and Volumes
 docker compose down -v
 
@@ -32,6 +29,7 @@ docker compose logs -f
 # Stop the containers when needed
 docker compose down
 ```
+
 
 ## Notes
 
@@ -51,5 +49,16 @@ docker volume ls
 docker system prune -a
 ```
 
+
+
 For more details, refer to the [Docker Compose documentation](https://docs.docker.com/compose/).
+
+## View the Database
+
+- Use MongoDB Compass to view the Database
+- MongoDB Compass is a GUI tool for viewing the MongoDB databases, allowing visualization, querying, and data manipulation.
+- For more details see [MongoDB Compass](https://www.mongodb.com/products/tools/compass)
+
+
+
 
