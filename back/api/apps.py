@@ -54,6 +54,13 @@ class ApiConfig(AppConfig):
 
         Args:
             database_url (str): URL of the database
+            username (str): Username of the database
+            password (str): Password of the database
+            database_auth_mechanism (str): Authentication mechanism of the database
+            database_name (str): Name of the database
+            courses_collection_name (str): Name of the collection to store the course data
+            course_data (list[dict]): List of dictionaries containing the course data
+            
         Returns:
             bool: True if documents were uploaded to the database, False if not
         """
