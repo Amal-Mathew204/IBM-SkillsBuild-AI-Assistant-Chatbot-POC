@@ -10,6 +10,19 @@ services:
     depends_on:
       - mongo
     env_file: ".env"
+  
+  semanticsearch:
+    build:
+      context: ./semanticsearch
+      dockerfile: Dockerfile
+    ports:
+      - "8020:8020"
+    volumes:
+      - ./semanticsearch:/app
+    depends_on:
+      - mongo
+      - backend
+    env_file: ".env"
 
   frontend:
     build:
@@ -31,6 +44,7 @@ services:
     depends_on:
       - frontend
       - backend
+      - semanticsearch
 
   mongo:
     image: mongo:6
