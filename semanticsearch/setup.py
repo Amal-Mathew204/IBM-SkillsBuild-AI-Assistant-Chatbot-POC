@@ -2,9 +2,9 @@
 Python Script for Setting Up the Semantic Search Module
 - The Script will create and store (on the applications DB) the courses embedded dataset
 """
-from .logger import ModuleLogger #pylint: disable=relative-beyond-top-level
-from .sts_module.database.mongo_db_interface import MongoDBDatabase
-from .sts_module.embedding_module.controller import EmbeddingController
+from logger import ModuleLogger #pylint: disable=relative-beyond-top-level
+from sts_module.database.mongo_db_interface import MongoDBDatabase
+from sts_module.embedding_module.controller import EmbeddingController
 
 
 def database_setup_embedded_database(url: str, username: str, password: str,

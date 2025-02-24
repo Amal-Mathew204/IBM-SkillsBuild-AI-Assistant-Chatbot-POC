@@ -1,14 +1,30 @@
 """
 Fast API main.py defining the API endpoint to access the semantic search module
 """
+from contextlib import asynccontextmanager
 import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 from sts_module.database.mongo_db_interface import MongoDBDatabase
 from sts_module.embedding_module.controller import EmbeddingController
+from setup import database_setup_embedded_database
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    "Method for executing setup code for the semantic search module"
+    url: str = f"mongodb://{os.getenv('MONGO_CONTAINER')}:{os.getenv('MONGO_PORT')}/"
+    database_setup_embedded_database(
+                url=url,
+                username=os.getenv('MONGO_USER'),
+                password=os.getenv('MONGO_PASSWORD'),
+                database_auth_mechanism=os.getenv('MONGO_AUTH_MECHANISM'),
+                database_name=os.getenv('MONGO_CHATBOT_DATABASE'),
+                courses_collection_name=os.getenv('MONGO_COURSE_COLLECTION'),
+                embedded_dataset_collection_name=os.getenv('MONGO_EMBEDDED_DATASET_COLLECTION')
+            )
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -68,4 +84,3 @@ def main(query: str, k: int) -> list[dict]:
         raise HTTPException(status_code=422,
                             detail="Number of courses returned must be greater than zero")
     return get_top_k_courses(query=query, k=k)
-
