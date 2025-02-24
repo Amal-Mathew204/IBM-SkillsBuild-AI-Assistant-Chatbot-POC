@@ -43,14 +43,10 @@ def get_top_k_courses(query: str, k: int) -> list[dict]:
     return controller.courses_semantic_search(query, k)
 
 
-def chatbotResponse(request) -> JsonResponse:
+def chatbot(request, query: str, k: int) -> JsonResponse:
     """
     Method
     """
-    request_body = json.loads(request.body.decode('utf-8'))
-    query = request_body.get("query",None)
-    k = request_body.get("k", None)
-    
     # todo get data from the request body
     courses = get_top_k_courses(query, k)
     return JsonResponse(status=200,
