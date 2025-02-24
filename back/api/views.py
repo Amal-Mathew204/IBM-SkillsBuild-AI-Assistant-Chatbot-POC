@@ -1,7 +1,10 @@
 """
 Module contains all the view functions for the api app
 """
+import json
 import os
+
+from django.http import JsonResponse
 from .WIPSemanticSearchModule.sts_module.embedding_module.controller import EmbeddingController
 from .WIPSemanticSearchModule.sts_module.database.mongo_db_interface import MongoDBDatabase
 
@@ -38,3 +41,21 @@ def get_top_k_courses(query: str, k: int) -> list[dict]:
                     collection=os.getenv('MONGO_EMBEDDED_DATASET_COLLECTION'))
     controller = EmbeddingController(courses_database, embedded_database)
     return controller.courses_semantic_search(query, k)
+
+
+def chatbotResponse(request) -> JsonResponse:
+    """
+    Method
+    """
+    request_body = json.loads(request.body.decode('utf-8'))
+    query = request_body.get("query",None)
+    k = request_body.get("k", None)
+    
+    # todo get data from the request body
+    courses = get_top_k_courses(query, k)
+    return JsonResponse(status=200,
+                        data={
+                            "courses": courses,
+                            "text_response": "text response"
+                        })
+    
