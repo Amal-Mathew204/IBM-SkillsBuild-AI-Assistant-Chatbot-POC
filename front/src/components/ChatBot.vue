@@ -77,15 +77,16 @@ export default {
     methods: {
         //Method to send message
         sendMessage() {
+            console.log("send message");
             if (!this.message.trim()) return; //helps stop sending empty messages
             this.messages.push({ text: this.message, type: "sent" });
             localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
+            this.apiResponse(this.message)
             this.message = "";
             //Auto scrolls messags to the bottom so its in view
             this.$nextTick(() => {
                 this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
             });
-            this.apiResponse(this.message)
         },
         //Method to reset chat
         resetChat() {
@@ -95,18 +96,23 @@ export default {
         async apiResponse(userQuery){
             try
                 {
-                  const response = await fetch ('/api/chatbotResonse',
+                  const response = await fetch (`/api/chatbot/${userQuery.replace("%20", "")}/${5}`,
                   {
                     method: "GET",
-                    body: JSON.stringify({
-                        "query": this.formData.friendName,
-                        "k": 5
-                    })
                   });
                   if (response.ok)
                   {
-                    data = await response.json();
+                    let data = await response.json();
                     console.log(data);
+                    let text = "The following courses are recommended: "
+                    let courses = data.courses
+                    courses.forEach(element => {
+                        text = text + element["title"] + "\n"
+                    });
+                    this.message = text
+                    this.messages.push({ text: this.message, type: "received" });
+                    localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
+                    this.message = "";
                   }
                 } catch (error) {
                   console.log(error);
