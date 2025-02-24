@@ -3,7 +3,6 @@ import os
 import json
 from django.apps import AppConfig #pylint: disable=import-error
 from pymongo import MongoClient
-from .WIPSemanticSearchModule.setup import database_setup_embedded_database
 
 class ApiConfig(AppConfig):
     """
@@ -25,7 +24,7 @@ class ApiConfig(AppConfig):
                    encoding="UTF-8") as file_data:
             courses_data = json.load(file_data)
         url: str = f"mongodb://{os.getenv('MONGO_CONTAINER')}:{os.getenv('MONGO_PORT')}/"
-        files_uploaded: bool = self.database_setup_courses(
+        self.database_setup_courses(
             database_url=url,
             username=os.getenv('MONGO_USER'),
             password=os.getenv('MONGO_PASSWORD'),
@@ -34,16 +33,6 @@ class ApiConfig(AppConfig):
             courses_collection_name=os.getenv('MONGO_COURSE_COLLECTION'),
             course_data=courses_data
         )
-        if files_uploaded:
-            database_setup_embedded_database(
-                url=url,
-                username=os.getenv('MONGO_USER'),
-                password=os.getenv('MONGO_PASSWORD'),
-                database_auth_mechanism=os.getenv('MONGO_AUTH_MECHANISM'),
-                database_name=os.getenv('MONGO_CHATBOT_DATABASE'),
-                courses_collection_name=os.getenv('MONGO_COURSE_COLLECTION'),
-                embedded_dataset_collection_name=os.getenv('MONGO_EMBEDDED_DATASET_COLLECTION')
-            )
 
 
     def database_setup_courses(self, database_url: str, username: str, password: str,
