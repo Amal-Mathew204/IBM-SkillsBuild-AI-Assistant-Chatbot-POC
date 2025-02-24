@@ -85,12 +85,33 @@ export default {
             this.$nextTick(() => {
                 this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
             });
+            this.apiResponse(this.message)
         },
         //Method to reset chat
         resetChat() {
             localStorage.removeItem("chatbotMessages");
             this.messages = [{ text: "Hi there! I am the IBM Skills Build Chatbot...", type: "received" }];
         },
+        async apiResponse(userQuery){
+            try
+                {
+                  const response = await fetch ('/api/chatbotResonse',
+                  {
+                    method: "GET",
+                    body: JSON.stringify({
+                        "query": this.formData.friendName,
+                        "k": 5
+                    })
+                  });
+                  if (response.ok)
+                  {
+                    data = await response.json();
+                    console.log(data);
+                  }
+                } catch (error) {
+                  console.log(error);
+                }
+        }
     },
 };
 </script>
