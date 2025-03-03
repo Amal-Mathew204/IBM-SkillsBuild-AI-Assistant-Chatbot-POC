@@ -10,22 +10,22 @@
           </router-link>
         </li>
         <li>
-          <a href="https://skillsbuild.org/learners" class="navButtons">
+          <a href="https://skillsbuild.org/learners" target = "_blank" rel="noopener noreferrer"  class="navButtons">
             Learners
           </a>
         </li>
         <li>
-          <a href="https://skillsbuild.org/educators" class="navButtons">
+          <a href="https://skillsbuild.org/educators" target = "_blank" rel="noopener noreferrer"  class="navButtons">
             Educators
           </a>
         </li>
         <li>
-          <a href="https://skillsbuild.org/organizations" class="navButtons">
+          <a href="https://skillsbuild.org/organizations" target = "_blank" rel="noopener noreferrer" class="navButtons">
             Organizations
           </a>
         </li>
         <li>
-          <a href="https://skillsbuild.org/events" class="navButtons">
+          <a href="https://skillsbuild.org/events" target = "_blank" rel="noopener noreferrer" class="navButtons">
             Events
           </a>
         </li>

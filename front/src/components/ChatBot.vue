@@ -113,6 +113,10 @@ export default {
                     this.messages.push({ text: this.message, type: "received" });
                     localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
                     this.message = "";
+                    //Auto scrolls messags to the bottom so its in view
+                    this.$nextTick(() => {
+                        this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
+                    });
                   }
                 } catch (error) {
                   console.log(error);

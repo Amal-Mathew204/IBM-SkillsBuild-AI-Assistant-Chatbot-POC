@@ -31,7 +31,7 @@ services:
     ports:
         - 3000:3000
     volumes:
-      - ./front:/app/app/
+      - ./front/src:/app/src
     depends_on:
       - backend
       - semanticsearch
