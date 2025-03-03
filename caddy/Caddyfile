@@ -1,0 +1,11 @@
+localhost {
+    tls internal  # self-signed certificates for HTTPS
+
+    handle_path /api/* {
+        reverse_proxy backend:8000
+    }
+
+    handle_path /* {
+        reverse_proxy frontend:3000
+    }
+}
