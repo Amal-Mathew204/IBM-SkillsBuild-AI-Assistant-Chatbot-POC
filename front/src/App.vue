@@ -29,9 +29,6 @@
             Events
           </a>
         </li>
-        <router-link to="/datascience" class="navButtons" :class="{ active: activeLink === 'dataScience' }" @click="setActive('dataScience')">
-            Data Science 
-        </router-link>
         <li>
           <router-link to="/settings" class="navButtons" :class="{ active: activeLink === 'settings' }" @click="setActive('settings')">
             Settings

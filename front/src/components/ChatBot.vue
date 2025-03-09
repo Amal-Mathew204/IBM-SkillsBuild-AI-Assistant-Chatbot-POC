@@ -13,7 +13,34 @@
                     <img src="@/assets/chatbotIcon.png" class="messageIcon" />
                 </div>
                 <div class="messageBox" :style="settingStyle">
-                    {{ message.text }}
+                    <!-- Course reccomendation card -->
+                    <div class="courseReccomendation" v-if="message.isApiResponse">
+                        <h4>Recommended Courses:</h4>
+                        <ul>
+                            <li v-for="(course, i) in message.courses" :key="i">
+                                <a :href="message.courseURL[i]" target="_blank" class="courseLink">
+                                    <strong>{{ course }}</strong>
+                                </a>
+                                <ul>
+                                    <li>Type: {{ message.courseType[i] }}</li>
+                                    <li>Completion Time: {{ message.timeCompletion[i] }}</li>
+                                </ul>
+                                <!-- See Similar Courses Button -->
+                                <button class="similarCoursesButton">See Similar Courses</button>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!--  if 'data science' is mentioned -->
+                    <div class="dataScienceMessage" v-else-if="message.dataButton">
+                        <h4>{{ message.text }}</h4>
+                        <router-link to="/datascience">
+                            <button class="dataButton">Data Science</button>
+                        </router-link>
+                    </div>
+                    <div v-else>
+                        {{ message.text }}
+                    </div>
                 </div>
                 <div v-if="message.type === 'sent'">
                     <img src="@/assets/userIcon.png" class="messageIcon" />
@@ -65,15 +92,6 @@ export default {
             };
         },
     },
-    watch: {
-        // Watches for any changes within the setting values 
-        fontSize(newVal) {
-            this.currentFontSize = newVal;
-        },
-        fontColor(newVal) {
-            this.currentFontColor = newVal;
-        },
-    },
     methods: {
         //Method to send message
         sendMessage() {
@@ -81,7 +99,7 @@ export default {
             if (!this.message.trim()) return; //helps stop sending empty messages
             this.messages.push({ text: this.message, type: "sent" });
             localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
-            this.apiResponse(this.message)
+            this.apiResponse(this.message);
             this.message = "";
             //Auto scrolls messags to the bottom so its in view
             this.$nextTick(() => {
@@ -92,36 +110,48 @@ export default {
         resetChat() {
             localStorage.removeItem("chatbotMessages");
             this.messages = [{ text: "Hi there! I am the IBM Skills Build Chatbot...", type: "received" }];
+            localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
         },
-        async apiResponse(userQuery){
-            try
-                {
-                  const response = await fetch (`/api/chatbot/${userQuery.replace("%20", "")}/${5}`,
-                  {
+        async apiResponse(userQuery) {
+            try {
+                const response = await fetch(`/api/chatbot/${userQuery.replace("%20", "")}/${5}`, {
                     method: "GET",
-                  });
-                  if (response.ok)
-                  {
+                });
+
+                if (response.ok) {
                     let data = await response.json();
-                    console.log(data);
-                    let text = "The following courses are recommended: "
-                    let courses = data.courses
-                    courses.forEach(element => {
-                        text = text + element["title"] + "\n"
-                    });
-                    this.message = text
-                    this.messages.push({ text: this.message, type: "received" });
+                    let courses = data.courses.map(course => course["title"]);
+                    let timeCompletion = data.courses.map(course => course["learning_hours"]);
+                    let courseType = data.courses.map(course => course["course_type"]);
+                    let courseURL = data.courses.map(course => course["url"]);
+                    let responseMessage = {
+                        isApiResponse: true,
+                        type: "received",
+                        courses: courses,
+                        timeCompletion: timeCompletion,
+                        courseType: courseType,
+                        courseURL: courseURL,
+                    };
+                    this.messages.push(responseMessage);
+
+                    if (courses.some(course => course.toLowerCase().includes("data science"))) {
+                        this.messages.push({
+                            type: "received",
+                            text: "Want to learn more about Data Science, Click the button below:",
+                            dataButton: true,
+                        });
+                    }
                     localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
                     this.message = "";
                     //Auto scrolls messags to the bottom so its in view
                     this.$nextTick(() => {
                         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
                     });
-                  }
-                } catch (error) {
-                  console.log(error);
                 }
-        }
+            } catch (error) {
+                console.log(error);
+            }
+        },
     },
 };
 </script>
@@ -144,7 +174,6 @@ export default {
     right: 10px;
 }
 .newChatButton {
-    position: relative;
     background: transparent;
     border: none;
 }
@@ -174,8 +203,10 @@ export default {
 .message.sent {
     justify-content: flex-end;
 }
+
 .message.received {
     justify-content: flex-start;
+    margin-bottom: 10px;
 }
 .messageIcon {
     width: 100px;
@@ -186,9 +217,58 @@ export default {
     background-color: #d9d9d9;
     max-width: 100%;
     border-radius: 15px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
 }
 .message.sent .messageBox {
-    background-color: #d9d9d9;
+    background-color: #7fc0fc;
+}
+
+/* course reccomendation Styling */
+.courseReccomendation {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    border-left: 6px solid #0083ff;
+    margin-top: 10px;
+    padding-right: 20px;
+}
+.courseReccomendation h4 {
+    margin-bottom: 10px;
+    color: #007bff;
+    font-weight: bold;
+    font-size: inherit;
+}
+.courseReccomendation ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.courseReccomendation li {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+.courseReccomendation li strong {
+    color: #343a40;
+    font-size: inherit;
+}
+.courseLink {
+    color: #0083ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.courseLink:hover {
+    text-decoration: underline;
+}
+
+.courseReccomendation ul ul {
+    margin-top: 5px;
+    padding-left: 15px;
+}
+
+.courseReccomendation ul ul li {
+    font-size: inherit;
 }
 
 /* Styling for message input box */
@@ -201,6 +281,7 @@ export default {
     bottom: 20px;
     border-radius: 25px;
     padding: 15px 10px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
 }
 .messageInputBox input {
     flex-grow: 1;
@@ -231,5 +312,37 @@ export default {
 }
 .sendButton:hover .sendIcon {
     transform: scale(1.3);
+}
+
+/* Router Message Container */
+.dataScienceMessage {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    border-left: 6px solid #007bff;
+}
+
+/* Button Styling */
+.dataButton, .similarCoursesButton {
+    display: block;
+    margin-top: 10px;
+    background: linear-gradient( #007bff, #0056b3);
+    color: #ffffff;
+    border: none;
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
+}
+
+.dataButton:hover, .similarCoursesButton:hover {
+    background: linear-gradient(#0056b3, #004494);
+    transform: scale(1.05);
 }
 </style>
