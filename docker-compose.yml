@@ -24,6 +24,19 @@ services:
       - backend
     env_file: ".env"
 
+  elasticsearch:
+    build:
+      context: ./elasticsearch
+      dockerfile: Dockerfile
+    ports:
+      - "8030:8030"
+    volumes:
+      - ./elasticsearch:/app
+    depends_on:
+      - mongo
+      - backend
+    env_file: ".env"
+
   frontend:
     build:
       context: ./front
