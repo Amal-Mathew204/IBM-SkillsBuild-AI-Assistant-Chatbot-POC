@@ -16,23 +16,24 @@ class Course(BaseModel):
     tags: list
     url: str 
 
-es_client = None
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    es_client = get_es_client()
-    create_index(es_client, "courses_index")
+    print("Start Up Process")
+    app.es_client = get_es_client()
+    create_index(app.es_client, "courses_index")
     documents = fetch_documents(os.getenv('MONGO_COURSE_COLLECTION'))
-    index_documents(es_client, "courses_index", documents)
+    print("Documents retrieved from DB: ", len(documents))
+    index_documents(app.es_client, "courses_index", documents)
+    print("Start Up Process Finished")
     yield
-    es_client.close()
+    app.es_client.close()
 
 app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/")
 def search_courses(course: Course):
-    es_client = get_es_client()
-    results = search_similar_courses(es_client, "courses_index", dict(course))
+    results = search_similar_courses(app.es_client, "courses_index", dict(course))
+    print(results)
     courses = [hit['_source'] for hit in results['hits']['hits']]
     return courses
