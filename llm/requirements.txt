@@ -1,2 +1,5 @@
-fastapi==0.115.8
-fastapi-cli==0.0.7
+fastapi== 0.115.8
+fastapi-cli== 0.0.7
+torch == 2.5.1
+transformers == 4.48.3
+accelerate==0.26.0
