@@ -9,8 +9,8 @@ def get_mongo_client():
                        authMechanism = os.getenv('MONGO_AUTH_MECHANISM')
                        )
 
-def fetch_documents(collection_name, limit=10):
+def fetch_documents(collection_name):
     client = get_mongo_client()
     db = client[os.getenv('MONGO_CHATBOT_DATABASE')]
     collection = db[collection_name]
-    return list(collection.find().limit(limit))
+    return list(collection.find())
