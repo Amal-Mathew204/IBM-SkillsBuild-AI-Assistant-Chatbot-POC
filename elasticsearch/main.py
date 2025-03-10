@@ -8,6 +8,10 @@ class Course(BaseModel):
     #TODO: need to fill our the rest of the fields of an expected IBM SkillsBuild Course JSON Object
     title: str
     description: str
+    learning_hours: str
+    course_type: str
+    tags: list
+    url: str 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,7 +19,7 @@ async def lifespan(app: FastAPI):
     #TODO: put any code here if u need to establish any connection objects to elastic search (if its a global variable make sure 
     #declare it outside this method so its accessible to the entire script)
     #NOTE: add stuff to the csv files if there is any authentication or url stuff for connecting to elastic search
-
+    
     yield
     #NOTE the yeild keyword separate the code
     #Code before yield happends before the server starts
