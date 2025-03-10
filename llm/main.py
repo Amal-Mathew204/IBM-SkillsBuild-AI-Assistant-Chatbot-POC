@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from controller import LLMController
 from pydantic import BaseModel
 import os
+from unsloth import LlamaForCausalLM
 
 class Interaction(BaseModel):
     role: str
