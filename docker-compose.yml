@@ -38,10 +38,12 @@ services:
       - "9200:9200"
     volumes:
       - elasticsearch-data:/usr/share/elasticsearch/data
-    depends_on:
-      - mongo
-      - backend
     env_file: ".env"
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail -u elastic:${ELASTICSEARCH_PASSWORD} elasticsearch:9200/_cluster/health || exit 1"]
+      interval: 20s
+      timeout: 20s
+      retries: 3
 
   reversesearch:
     build:
@@ -52,9 +54,12 @@ services:
     volumes:
       - ./reversesearch:/app
     depends_on:
-      - mongo
-      - backend
-      - elasticsearch
+      mongo:
+        condition: service_started
+      backend:
+        condition: service_started
+      elasticsearch:
+          condition: service_healthy
     env_file: ".env"
 
   llm:
