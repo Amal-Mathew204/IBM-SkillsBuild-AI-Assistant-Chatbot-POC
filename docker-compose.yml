@@ -25,16 +25,34 @@ services:
     env_file: ".env"
 
   elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch-node
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    depends_on:
+      - mongo
+      - backend
+    env_file: ".env"
+
+  reversesearch:
     build:
-      context: ./elasticsearch
+      context: ./reversesearch
       dockerfile: Dockerfile
     ports:
       - "8030:8030"
     volumes:
-      - ./elasticsearch:/app
+      - ./reversesearch:/app
     depends_on:
       - mongo
       - backend
+      - elasticsearch
     env_file: ".env"
 
   frontend:
@@ -82,3 +100,4 @@ volumes:
   mongo_data:
   caddy_data:
   caddy_config:
+  elasticsearch-data:
