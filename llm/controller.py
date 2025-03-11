@@ -1,6 +1,5 @@
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from unsloth import LlamaForCausalLM
 
 class LLMController:
     """
