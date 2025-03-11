@@ -39,4 +39,32 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
                             })
     return JsonResponse(status=500,
                         data={"detail": "(Error communicating with interval servers"})
+
+
+def get_similar_courses(request: HttpRequest) -> JsonResponse:
+    """
+    Method
+    """
+    #TODO change to invalid method response
+    if request.method != "POST":
+        return
+    # TODO valididate inputs
+    # also do exception handling
+    # (so making early requests will cause exceptions)
+    # and just do overall handling of bad requests
+    course_info = request.data["course"]
+    url: str = f"http://reversesearch:{os.getenv('REVERSE_SEARCH_PORT')}/"
+    print(url)
+    response = requests.post(url, data=course_info, timeout=30)
+    print("Response")
+    print(response.status_code)
+    print(response.text)
+    if response.status_code == 200:
+        courses = response.json()
+        return JsonResponse(status=200,
+                            data={
+                                "similar_courses": courses
+                            })
+    return JsonResponse(status=500,
+                        data={"detail": "(Error communicating with interval servers"})
     

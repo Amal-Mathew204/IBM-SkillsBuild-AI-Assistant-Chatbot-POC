@@ -41,8 +41,8 @@ services:
     env_file: ".env"
     healthcheck:
       test: ["CMD-SHELL", "curl --silent --fail -u elastic:${ELASTICSEARCH_PASSWORD} elasticsearch:9200/_cluster/health || exit 1"]
-      interval: 20s
-      timeout: 20s
+      interval: 30s
+      timeout: 30s
       retries: 3
 
   reversesearch:
