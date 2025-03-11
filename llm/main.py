@@ -4,7 +4,9 @@ from fastapi import FastAPI
 from controller import LLMController
 from pydantic import BaseModel
 import os
-from unsloth import LlamaForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import PeftModel
+import torch
 
 class Interaction(BaseModel):
     role: str
@@ -28,30 +30,68 @@ app = FastAPI(lifespan=lifespan)
 @app.post("/chatbot/")
 def llm(conversation_state: ConversationState):
     conversations = dict(conversation_state)["conversation_state"]
-    # Make sure unsloth is installed in your Docker
-    model_path = "./llama3.2"
-    
-    # Load using Unsloth's loader
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    model = LlamaForCausalLM.from_pretrained(
-        model_path,
-        device_map="auto",
-        torch_dtype="auto"
-    )
 
-    result = controller.process_conversation(conversations)
+    # Path to the base model on Hugging Face
+    base_model_id = "meta-llama/Llama-3.2-3B-Instruct"  # Adjust to match the base model you used
 
-    # If a response was generated, add it to the conversation history
-    if result["response"] is not None:
-        conversations.append({
-            "role": "assistant",
-            "content": result["response"]
-        })
+    # Your Hugging Face token
+    hf_token = "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" 
     
-    # Return the result with the updated conversation and suitability flag
-    return {
-        "conversation_state": conversations,
-        "response": result["response"],
-        "suitable_for_search": result["suitable_for_search"]
-    }
-    return(conversations)
+    # Path to your adapter/fine-tuned model
+    adapter_path = "./llama3.2"
+    
+    try:
+        # Load base model and tokenizer with token
+        tokenizer = AutoTokenizer.from_pretrained(
+            base_model_id,
+            token=hf_token
+        )
+        base_model = AutoModelForCausalLM.from_pretrained(
+            base_model_id,
+            token=hf_token,
+            torch_dtype=torch.bfloat16 if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8 else torch.float16,
+            device_map="auto"
+        )
+        
+        # Load the adapter on top of the base model
+        model = PeftModel.from_pretrained(base_model, adapter_path)
+        
+        # Create a modified controller that accepts pre-loaded models
+        class AdapterLLMController(LLMController):
+            def __init__(self, model, tokenizer):
+                # Override the __init__ to accept pre-loaded model and tokenizer
+                self.model = model
+                self.tokenizer = tokenizer
+        
+        # Initialize controller with pre-loaded model and tokenizer
+        controller = AdapterLLMController(model, tokenizer)
+        
+        # Process the conversation
+        result = controller.process_conversation(conversations)
+        
+        # If a response was generated, add it to the conversation history
+        if result["response"] is not None:
+            conversations.append({
+                "role": "assistant",
+                "content": result["response"]
+            })
+        
+        # Return the result
+        return {
+            "conversation_state": conversations,
+            "response": result["response"],
+            "suitable_for_search": result["suitable_for_search"]
+        }
+    
+    except Exception as e:
+        # Log the error for debugging
+        import traceback
+        error_details = traceback.format_exc()
+        print(f"Error loading model: {e}\n{error_details}")
+        
+        # Return error response
+        return {
+            "error": f"Model loading failed: {str(e)}",
+            "conversation_state": conversations
+        }
+    
