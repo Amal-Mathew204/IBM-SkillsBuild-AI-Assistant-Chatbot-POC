@@ -4,6 +4,8 @@ WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt /app/
+RUN pip install torch
+RUN pip install unsloth
 RUN pip install -r requirements.txt
 
 # Copy Django project
