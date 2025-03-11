@@ -32,14 +32,14 @@ def llm(conversation_state: ConversationState):
     conversations = dict(conversation_state)["conversation_state"]
 
     # Path to the base model on Hugging Face
-    base_model_id = "meta-llama/Llama-3.2-3B-Instruct"  # Adjust to match the base model you used
+    base_model_id = "meta-llama/Llama-3.2-3B-Instruct" # Adjust to match the base model you used
 
     # Your Hugging Face token
-    hf_token = "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" 
-    
+    hf_token = "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"
+
     # Path to your adapter/fine-tuned model
-    adapter_path = "./llama3.2"
-    
+    adapter_path = "/content/drive/MyDrive/trained_models/normal/llama3.2"
+
     try:
         # Load base model and tokenizer with token
         tokenizer = AutoTokenizer.from_pretrained(
@@ -50,7 +50,7 @@ def llm(conversation_state: ConversationState):
             base_model_id,
             token=hf_token,
             torch_dtype=torch.bfloat16 if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8 else torch.float16,
-            device_map="auto"
+            device_map="cpu"
         )
         
         # Load the adapter on top of the base model
@@ -69,29 +69,23 @@ def llm(conversation_state: ConversationState):
         # Process the conversation
         result = controller.process_conversation(conversations)
         
-        # If a response was generated, add it to the conversation history
-        if result["response"] is not None:
-            conversations.append({
-                "role": "assistant",
-                "content": result["response"]
-            })
-        
-        # Return the result
-        return {
-            "conversation_state": conversations,
+        # Print only the response and suitability status, not the conversation history
+        simplified_output = {
             "response": result["response"],
             "suitable_for_search": result["suitable_for_search"]
         }
-    
+        return simplified_output
+        
     except Exception as e:
         # Log the error for debugging
         import traceback
         error_details = traceback.format_exc()
         print(f"Error loading model: {e}\n{error_details}")
         
-        # Return error response
-        return {
-            "error": f"Model loading failed: {str(e)}",
-            "conversation_state": conversations
+        # Return error response without conversation history
+        error_output = {
+            "error": f"Model loading failed: {str(e)}"
         }
-    
+        return error_output
+
+        
