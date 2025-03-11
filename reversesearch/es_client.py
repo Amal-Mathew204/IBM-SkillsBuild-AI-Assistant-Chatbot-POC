@@ -34,12 +34,11 @@ def search_similar_courses(es_client, index_name, course_input):
     search_query = {
         "query": {
             "more_like_this": {
-                "fields": ["title", "description", "tags"],  # Analyzing all relevant fields
+                "fields": ["title", "tags"],  # Analyzing all relevant fields
                 "like": [
                     {
                         "doc": {
                             "title": course_input["title"],
-                            "description": course_input["description"],
                             "tags": course_input["tags"]
                         }
                     }
