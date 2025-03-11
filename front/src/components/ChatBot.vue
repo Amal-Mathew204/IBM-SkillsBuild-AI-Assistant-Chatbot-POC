@@ -165,32 +165,31 @@ export default {
             },
 
         async reverse_search (course_info){
-            console.log(course_info);
-            return
-            // try {
-            //     const csrfToken = this.getCookie("csrftoken", document.cookie);
-            //     const response = await fetch("/api/similarcourses/", {
-            //         method: 'POST',
-            //         credentials: "same-origin",
-            //         mode: 'cors',
-            //         headers: {
-            //         'Content-Type': 'application/json',
-            //         'Cookie': document.cookie,
-            //         'x-csrftoken': csrfToken,
-            //         },
-            //         body: {
-            //             "course": course_info,
-            //         }
-            //     });
+            try {
+                course_info = JSON.parse(JSON.stringify(course_info));
+                const csrfToken = this.getCookie("csrftoken", document.cookie);
+                const response = await fetch("/api/similarcourses/", {
+                    method: 'POST',
+                    credentials: "same-origin",
+                    mode: 'cors',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    'Cookie': document.cookie,
+                    'x-csrftoken': csrfToken,
+                    },
+                    body: JSON.stringify({  
+                        "course": JSON.parse(JSON.stringify(course_info)),
+                    })
+                });
                 
 
-            //     if (response.ok) {
-            //         let data = await response.json();
-            //         console.log(data);
-            //     }
-            // } catch (error) {
-            //     console.log(error);
-            // }
+                if (response.ok) {
+                    let data = await response.json();
+                    console.log(data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
     },
 };
