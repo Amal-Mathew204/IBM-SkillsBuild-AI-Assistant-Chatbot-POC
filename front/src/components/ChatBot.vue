@@ -26,7 +26,7 @@
                                     <li>Completion Time: {{ message.timeCompletion[i] }}</li>
                                 </ul>
                                 <!-- See Similar Courses Button -->
-                                <button class="similarCoursesButton">See Similar Courses</button>
+                                <button @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
                             </li>
                         </ul>
                     </div>
@@ -131,6 +131,7 @@ export default {
                         timeCompletion: timeCompletion,
                         courseType: courseType,
                         courseURL: courseURL,
+                        coursesReceived: data.courses
                     };
                     this.messages.push(responseMessage);
 
@@ -152,6 +153,45 @@ export default {
                 console.log(error);
             }
         },
+
+        //Gets cookies from page
+        getCookie(cookieValueKey, cookies)
+            {
+                    const value = cookies.split('; ')
+                                        .map(cookie => cookie.split('='))
+                                        .find(([key]) => key === cookieValueKey);
+                    
+                return value ? decodeURIComponent(value[1]) : "";
+            },
+
+        async reverse_search (course_info){
+            console.log(course_info);
+            return
+            // try {
+            //     const csrfToken = this.getCookie("csrftoken", document.cookie);
+            //     const response = await fetch("/api/similarcourses/", {
+            //         method: 'POST',
+            //         credentials: "same-origin",
+            //         mode: 'cors',
+            //         headers: {
+            //         'Content-Type': 'application/json',
+            //         'Cookie': document.cookie,
+            //         'x-csrftoken': csrfToken,
+            //         },
+            //         body: {
+            //             "course": course_info,
+            //         }
+            //     });
+                
+
+            //     if (response.ok) {
+            //         let data = await response.json();
+            //         console.log(data);
+            //     }
+            // } catch (error) {
+            //     console.log(error);
+            // }
+        }
     },
 };
 </script>
