@@ -1,6 +1,7 @@
 """
 Module contains all the view functions for the api app
 """
+import json
 import os
 import requests
 from django.http import HttpRequest, JsonResponse
@@ -52,10 +53,10 @@ def get_similar_courses(request: HttpRequest) -> JsonResponse:
     # also do exception handling
     # (so making early requests will cause exceptions)
     # and just do overall handling of bad requests
-    course_info = request.data["course"]
+    course_info = json.loads(request.body.decode("utf-8"))["course"]
     url: str = f"http://reversesearch:{os.getenv('REVERSE_SEARCH_PORT')}/"
     print(url)
-    response = requests.post(url, data=course_info, timeout=30)
+    response = requests.post(url, json=course_info, timeout=30)
     print("Response")
     print(response.status_code)
     print(response.text)
