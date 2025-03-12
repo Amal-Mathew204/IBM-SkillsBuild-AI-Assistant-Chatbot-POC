@@ -15,7 +15,7 @@
                 <div class="messageBox" :style="settingStyle">
                     <!-- Course reccomendation card -->
                     <div class="courseReccomendation" v-if="message.isApiResponse">
-                        <h4>Recommended Courses:</h4>
+                        <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
                         <ul>
                             <li v-for="(course, i) in message.courses" :key="i">
                                 <a :href="message.courseURL[i]" target="_blank" class="courseLink">
