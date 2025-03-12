@@ -26,7 +26,7 @@
                                     <li>Completion Time: {{ message.timeCompletion[i] }}</li>
                                 </ul>
                                 <!-- See Similar Courses Button -->
-                                <button @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
+                                <button v-if= "message.coursesReceived !==undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
                             </li>
                         </ul>
                     </div>
@@ -185,7 +185,27 @@ export default {
 
                 if (response.ok) {
                     let data = await response.json();
+                    console.log(data)
+                    let courses = data.similar_courses.map(course => course["title"]);
+                    let timeCompletion = data.similar_courses.map(course => course["learning_hours"]);
+                    let courseType = data.similar_courses.map(course => course["course_type"]);
+                    let courseURL = data.similar_courses.map(course => course["url"]);
+                    let responseMessage = {
+                        isApiResponse: true,
+                        type: "received",
+                        courses: courses,
+                        timeCompletion: timeCompletion,
+                        courseType: courseType,
+                        courseURL: courseURL,
+                    };
+                    this.messages.push(responseMessage);
                     console.log(data);
+                    localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
+                    this.message = "";
+                    //Auto scrolls messags to the bottom so its in view
+                    this.$nextTick(() => {
+                        this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
+                    });
                 }
             } catch (error) {
                 console.log(error);
