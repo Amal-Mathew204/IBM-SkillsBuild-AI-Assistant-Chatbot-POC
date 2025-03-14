@@ -15,11 +15,9 @@ class LLMController:
             model_path (str): Path to the pre-trained or fine-tuned model
         """
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_path,
-            torch_dtype=torch.bfloat16 if torch.cuda.is_available() and torch.cuda.get_device_capability()[0] >= 8 else torch.float16,
-            device_map="auto"
-        )
+        self.model = AutoModelForCausalLM.from_pretrained(model_path,
+                                                          low_cpu_mem_usage=True,
+                                                          torch_dtype=torch.float16)
     
     def process_conversation(self, conversation_history):
         """
@@ -112,3 +110,4 @@ class LLMController:
         content_suitable = has_education and has_career_goals and has_knowledge and not is_off_topic
         
         return content_suitable
+    

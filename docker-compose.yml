@@ -24,6 +24,20 @@ services:
       - backend
     env_file: ".env"
 
+  llm:
+    build:
+      context: ./llm
+      dockerfile: Dockerfile
+    ports:
+      - "8040:8040"
+    volumes:
+      - ./llm:/app
+    depends_on:
+      - mongo
+      - backend
+      - semanticsearch
+    env_file: ".env"
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
     container_name: elasticsearch
