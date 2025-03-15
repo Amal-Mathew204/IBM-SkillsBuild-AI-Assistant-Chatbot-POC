@@ -15,20 +15,23 @@
                 <div class="messageBox" :style="settingStyle">
                     <!-- Course reccomendation card -->
                     <div class="courseReccomendation" v-if="message.isApiResponse">
-                        <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
-                        <ul>
-                            <li v-for="(course, i) in message.courses" :key="i">
-                                <a :href="message.courseURL[i]" target="_blank" class="courseLink">
-                                    <strong>{{ course }}</strong>
-                                </a>
-                                <ul>
-                                    <li>Type: {{ message.courseType[i] }}</li>
-                                    <li>Completion Time: {{ message.timeCompletion[i] }}</li>
-                                </ul>
-                                <!-- See Similar Courses Button -->
-                                <button v-if= "message.coursesReceived !==undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
-                            </li>
-                        </ul>
+                        <h4>{{ message.text }}</h4>
+                        <div v-if="message.courses.length !== 0">
+                            <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
+                            <ul>
+                                <li v-for="(course, i) in message.courses" :key="i">
+                                    <a :href="message.courseURL[i]" target="_blank" class="courseLink">
+                                        <strong>{{ course }}</strong>
+                                    </a>
+                                    <ul>
+                                        <li>Type: {{ message.courseType[i] }}</li>
+                                        <li>Completion Time: {{ message.timeCompletion[i] }}</li>
+                                    </ul>
+                                    <!-- See Similar Courses Button -->
+                                    <button v-if= "message.coursesReceived !==undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
 
                     <!--  if 'data science' is mentioned -->
@@ -77,7 +80,7 @@ export default {
         return {
             message: "",
             messages: JSON.parse(localStorage.getItem("chatbotMessages")) || [
-                { text: "Hi there! I am the IBM Skills Build Chatbot...", type: "received" },
+                {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
             ],
             currentFontSize: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontSize + "px" || this.fontSize,
             currentFontColor: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontColor || this.fontColor,
@@ -109,7 +112,9 @@ export default {
         //Method to reset chat
         resetChat() {
             localStorage.removeItem("chatbotMessages");
-            this.messages = [{ text: "Hi there! I am the IBM Skills Build Chatbot...", type: "received" }];
+            this.messages = [
+                {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
+            ];
             localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
         },
         async apiResponse(userQuery) {
@@ -120,11 +125,13 @@ export default {
 
                 if (response.ok) {
                     let data = await response.json();
+                    print(data)
                     let courses = data.courses.map(course => course["title"]);
                     let timeCompletion = data.courses.map(course => course["learning_hours"]);
                     let courseType = data.courses.map(course => course["course_type"]);
                     let courseURL = data.courses.map(course => course["url"]);
                     let responseMessage = {
+                        text: data["text_response"],
                         isApiResponse: true,
                         type: "received",
                         courses: courses,
