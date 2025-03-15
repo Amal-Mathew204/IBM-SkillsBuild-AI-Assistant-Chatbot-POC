@@ -4,6 +4,7 @@ WORKDIR /app
 
 # Install dependencies
 COPY requirements.txt /app/
+RUN pip install -U peft
 RUN pip install transformers
 RUN pip install torch
 RUN pip install -r requirements.txt
