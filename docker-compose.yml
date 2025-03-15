@@ -28,6 +28,7 @@ services:
     build:
       context: ./llm
       dockerfile: Dockerfile
+    container_name: llm
     ports:
       - "8040:8040"
     volumes:
