@@ -1,4 +1,5 @@
 import torch
+from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 class LLMController:
@@ -14,10 +15,28 @@ class LLMController:
         Args:
             model_path (str): Path to the pre-trained or fine-tuned model
         """
-        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
-        self.model = AutoModelForCausalLM.from_pretrained(model_path,
-                                                          low_cpu_mem_usage=True,
-                                                          torch_dtype=torch.float16)
+        base_model_id = "meta-llama/Llama-3.2-3B-Instruct"
+
+        hf_token = "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"
+
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            base_model_id,
+            token=hf_token
+        )
+        base_model = AutoModelForCausalLM.from_pretrained(
+            base_model_id,
+            torch_dtype=torch.float16,
+            low_cpu_mem_usage=True,
+            token=hf_token
+        )
+
+        self.model = PeftModel.from_pretrained(base_model, model_path,
+                                                      low_cpu_mem_usage=True)
+
+        # self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        # self.model = AutoModelForCausalLM.from_pretrained(model_path,
+        #                                                   low_cpu_mem_usage=True,
+        #                                                   torch_dtype=torch.float16)
     
     def process_conversation(self, conversation_history):
         """

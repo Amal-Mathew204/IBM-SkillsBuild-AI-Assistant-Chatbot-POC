@@ -1,6 +1,7 @@
 #TODO use pylint doc string this file
 import traceback
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 from controller import LLMController
 from pydantic import BaseModel
 
@@ -12,7 +13,14 @@ class Interaction(BaseModel):
 class ConversationState(BaseModel):
     conversation_state: list[Interaction]
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    "Method for executing setup code for the semantic search module"
+    model_path: str ="./llama3.2"
+    app.controller = LLMController(model_path)
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/chatbot/")
@@ -24,13 +32,11 @@ def llm(conversation_state: ConversationState):
     conversations = []
     for convo in unformatted_conversations:
         conversations.append(dict(convo))
-    
+        print(conversations)
 
     try:
-        model_path: str ="./llama_model"
-        controller = LLMController(model_path)
         # Process the conversation
-        result = controller.process_conversation(conversations) #pylint: disable=no-member
+        result = app.controller.process_conversation(conversations) #pylint: disable=no-member
         # Print only the response and suitability status, not the conversation history
         simplified_output = {
             "response": result["response"],

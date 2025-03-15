@@ -22,22 +22,38 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
     if not request.session.session_key:
         request.session.create()
         request.session["input_count"]=0
+        request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
     request.session["input_count"] = request.session["input_count"] + 1
     print("REQUEST SESSION",request.session["input_count"])
 
-    url: str = f"http://semanticsearch:{os.getenv('SEMANTIC_SEARCH_PORT')}/{query}/{k}"
-    print(url)
-    response = requests.get(url, timeout=30)
-    print("Response")
-    print(response.status_code)
-    print(response.text)
+    # url: str = f"http://semanticsearch:{os.getenv('SEMANTIC_SEARCH_PORT')}/{query}/{k}"
+    # print(url)
+    # response = requests.get(url, timeout=30)
+    # print("Response")
+    # print(response.status_code)
+    # print(response.text)
+    # if response.status_code == 200:
+    #     courses = response.json()
+    #     return JsonResponse(status=200,
+    #                         data={
+    #                             "courses": courses,
+    #                             "text_response": "text response"
+    #                         })
+
+    request.session["conversation"].append({"role": "user", "content": f"{query}"})
+    print(request.session["conversation"])
+    url: str = f"http://llm:{os.getenv('LLM_PORT')}/chatbot/"
+    response = requests.post(url, json={
+        "conversation_state": request.session["conversation"],
+    })
+
     if response.status_code == 200:
-        courses = response.json()
+        llm_response = response.json()
+        print(llm_response)
+        request.session["conversation"].append({"role": "assistant", "content": f"{llm_response['response']}"})
         return JsonResponse(status=200,
-                            data={
-                                "courses": courses,
-                                "text_response": "text response"
-                            })
+                            data={"text_response": llm_response["response"],
+                                  "courses": []})
     return JsonResponse(status=500,
                         data={"detail": "(Error communicating with interval servers"})
 
