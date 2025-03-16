@@ -3,10 +3,11 @@
 import json
 
 
-def get_faulty_courses(courses: list[dict]) -> dict:
+def observe_courses(courses: list[dict]) -> dict:
     """
         Method returns all duplicate courses
     """
+    faulty_courses = []
     memo = {}
 
     for course in courses:
@@ -15,8 +16,9 @@ def get_faulty_courses(courses: list[dict]) -> dict:
         else:
             memo[course['title']] = []
             if course.get('url', None) is None:
-                memo[course['title']].append(course)
-    return memo
+                faulty_courses.append(course)
+    duplicate_courses = {k:v for k,v in memo.items() if len(v) > 0}
+    return duplicate_courses, faulty_courses
 
 
 if __name__ == "__main__":
@@ -24,9 +26,7 @@ if __name__ == "__main__":
                 encoding="UTF-8") as file_data:
         courses_data = json.load(file_data)
     if courses_data is not None:
-        faulty_courses = get_faulty_courses(courses_data)
-        duplicate_courses = {k:v for k,v in faulty_courses.items() if len(v) > 1}
-        faulty_courses = {k:v for k,v in faulty_courses.items() if len(v) == 1}
+        duplicate_courses, faulty_courses = observe_courses(courses_data)
         print("Faulty Courses: ")
         print(json.dumps(faulty_courses, indent=2))
         print("Duplicate Courses: ")
