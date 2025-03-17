@@ -344,13 +344,13 @@ class LLMController:
         
         Args:
             conversation (list): List of message objects with role and content
-            missing_info (dict): Dictionary of missing information categories and questions
+            missing_info (dict): Dictionary of missing information categories
             
         Returns:
             str: The assistant's response with appropriate follow-up questions
         """
         # If there's no conversation yet, generate a welcome message
-        if len(conversation) <= 1:
+        if len(conversation) == 0:
             welcome_message = (
                 "Welcome to the IBM Skills Build data science course assistant! "
                 "To help you find the most relevant courses, I'd like to know about your background. "
@@ -358,35 +358,26 @@ class LLMController:
             )
             return welcome_message
         
-        # If we have missing information, craft a response to ask for it
-        if missing_info:
-            # Prioritize questions - education first, then career goals, then knowledge level
-            if "education" in missing_info:
-                return missing_info["education"]
-            elif "career_goals" in missing_info:
-                return missing_info["career_goals"]
-            elif "knowledge" in missing_info:
-                return missing_info["knowledge"]
-        
-        # If conversation is off-topic, redirect gently
-        if any("weather" in turn["content"].lower() for turn in conversation if turn["role"] == "user"):
-            return (
-                "I'm designed to help recommend data science courses on the IBM Skills Build platform. "
-                "I don't have information about weather forecasts. Could you tell me about your "
-                "educational background so I can help you find relevant courses?"
-            )
-        
-        # Create a custom response using the model's generation capability
-        # Add a system message to guide response generation
+        # Create a modified conversation with a hint about missing information
         prompt_conversation = conversation.copy()
         
-        # Add a message indicating information is incomplete
-        prompt_conversation.append({
-            "role": "system",
-            "content": "The user has not provided all the necessary information. Ask a follow-up question to gather more details."
-        })
+        # Add a subtle hint about what information is missing
+        hint = ""
+        if "education" in missing_info:
+            hint = "The user needs to provide educational background information."
+        elif "career_goals" in missing_info:
+            hint = "The user needs to provide career goals or aspirations."
+        elif "knowledge" in missing_info:
+            hint = "The user needs to provide information about their current knowledge level or technical skills."
         
-        # Format the conversation for the model
+        if hint:
+            # Add a system message with the hint
+            prompt_conversation.append({
+                "role": "system",
+                "content": hint + " Ask a follow-up question to gather the required details. Do not recommend courses."
+            })
+        
+        # Let the fine-tuned model generate the follow-up question
         formatted_prompt = self.tokenizer.apply_chat_template(prompt_conversation, tokenize=False, add_generation_prompt=True)
         
         # Generate the response
