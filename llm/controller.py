@@ -337,3 +337,71 @@ class LLMController:
             justified_courses.append(course_copy)
         
         return justified_courses
+    
+    def _generate_follow_up_questions(self, conversation, missing_info):
+        """
+        Generate a response with follow-up questions based on the missing information.
+        
+        Args:
+            conversation (list): List of message objects with role and content
+            missing_info (dict): Dictionary of missing information categories and questions
+            
+        Returns:
+            str: The assistant's response with appropriate follow-up questions
+        """
+        # If there's no conversation yet, generate a welcome message
+        if len(conversation) <= 1:
+            welcome_message = (
+                "Welcome to the IBM Skills Build data science course assistant! "
+                "To help you find the most relevant courses, I'd like to know about your background. "
+                "Could you tell me about your educational background or any degrees/qualifications you've completed?"
+            )
+            return welcome_message
+        
+        # If we have missing information, craft a response to ask for it
+        if missing_info:
+            # Prioritize questions - education first, then career goals, then knowledge level
+            if "education" in missing_info:
+                return missing_info["education"]
+            elif "career_goals" in missing_info:
+                return missing_info["career_goals"]
+            elif "knowledge" in missing_info:
+                return missing_info["knowledge"]
+        
+        # If conversation is off-topic, redirect gently
+        if any("weather" in turn["content"].lower() for turn in conversation if turn["role"] == "user"):
+            return (
+                "I'm designed to help recommend data science courses on the IBM Skills Build platform. "
+                "I don't have information about weather forecasts. Could you tell me about your "
+                "educational background so I can help you find relevant courses?"
+            )
+        
+        # Create a custom response using the model's generation capability
+        # Add a system message to guide response generation
+        prompt_conversation = conversation.copy()
+        
+        # Add a message indicating information is incomplete
+        prompt_conversation.append({
+            "role": "system",
+            "content": "The user has not provided all the necessary information. Ask a follow-up question to gather more details."
+        })
+        
+        # Format the conversation for the model
+        formatted_prompt = self.tokenizer.apply_chat_template(prompt_conversation, tokenize=False, add_generation_prompt=True)
+        
+        # Generate the response
+        inputs = self.tokenizer(formatted_prompt, return_tensors="pt").to(self.model.device)
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs["input_ids"],
+                max_new_tokens=256,
+                do_sample=True,
+                temperature=0.7,
+                top_p=0.9
+            )
+        
+        # Extract assistant's response
+        output = self.tokenizer.decode(outputs[0], skip_special_tokens=False)
+        assistant_reply = output.split("<|start_header_id|>assistant<|end_header_id|>")[-1].split("<|eot_id|>")[0].strip()
+        
+        return assistant_reply
