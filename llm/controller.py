@@ -56,8 +56,7 @@ class LLMController:
         response = None
         if not is_suitable:
             response = self._generate_follow_up_questions(conversation, missing_info)
-        else:
-            response = 
+        
         
         return {
             "response": response,
@@ -119,7 +118,7 @@ class LLMController:
             "The assistant should ask a follow-up question that fits smoothly with the ongoing conversation, "
             "considering any missing information from the user. "
             "The question should be relevant and fluid based on the conversation so far. "
-            "Only return the follow-up question with no additional text.\n\n"
+            "Only return the follow-up question with no additional text and do not provide a user response to that question.\n\n"
             f"Conversation history:\n{conversation_text}\n\n"
             f"Last user message: {last_user_message}\n"
             f"Last assistant message: {last_assistant_message}\n"
