@@ -57,11 +57,11 @@ class LLMController:
         # Only generate a response if the conversation is NOT suitable for search
         response = None
         if not is_suitable:
-            response = self._generate_response(conversation)
+            response = self._generate_follow_up_questions(conversation, missing_info)
         else:
             search_context = self.create_search_context(conversation)
             courses = self.get_courses_from_semantic_search(search_context)
-            response = self.generate_individual_justifications(conversation, courses)
+            courses = self.generate_individual_justifications(conversation, courses)
         
         return {
             "response": response,
@@ -140,7 +140,7 @@ class LLMController:
         
         return content_suitable, missing_info
 
-    def get_courses_from_semantic_search(context: str) -> list[dict] | None:
+    def get_courses_from_semantic_search(self, context: str) -> list[dict] | None:
         """
         Method retrieves courses from semantic search container
         

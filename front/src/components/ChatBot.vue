@@ -20,6 +20,9 @@
                             <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
                             <ul>
                                 <li v-for="(course, i) in message.courses" :key="i">
+                                    <div v-if="message.justifications !== undefined">
+                                        <h4 >{{ message.justifications[i] }}</h4>
+                                    </div>
                                     <a :href="message.courseURL[i]" target="_blank" class="courseLink">
                                         <strong>{{ course }}</strong>
                                     </a>
@@ -130,6 +133,7 @@ export default {
                     let timeCompletion = data.courses.map(course => course["learning_hours"]);
                     let courseType = data.courses.map(course => course["course_type"]);
                     let courseURL = data.courses.map(course => course["url"]);
+                    let justifications = data.courses.map(course => course["justification"])
                     let responseMessage = {
                         text: data["text_response"],
                         isApiResponse: true,
@@ -138,6 +142,7 @@ export default {
                         timeCompletion: timeCompletion,
                         courseType: courseType,
                         courseURL: courseURL,
+                        justifications: justifications,
                         coursesReceived: data.courses
                     };
                     this.messages.push(responseMessage);

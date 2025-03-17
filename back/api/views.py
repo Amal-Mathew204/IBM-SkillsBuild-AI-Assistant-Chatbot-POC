@@ -53,7 +53,7 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
         request.session["conversation"].append({"role": "assistant", "content": f"{llm_response['response']}"})
         return JsonResponse(status=200,
                             data={"text_response": llm_response["response"],
-                                  "courses": []})
+                                  "courses": llm_response["courses"]})
     return JsonResponse(status=500,
                         data={"detail": "(Error communicating with interval servers"})
 
