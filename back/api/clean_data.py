@@ -14,10 +14,10 @@ def observe_courses(courses: list[dict]) -> dict:
         if course['title'] in memo:
             memo[course['title']].append(course)
         else:
-            memo[course['title']] = []
+            memo[course['title']] = [course]
             if course.get('url', None) is None:
                 faulty_courses.append(course)
-    duplicate_courses = {k:v for k,v in memo.items() if len(v) > 0}
+    duplicate_courses = {k:v for k,v in memo.items() if len(v) > 1}
     return duplicate_courses, faulty_courses
 
 
