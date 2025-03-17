@@ -37,10 +37,9 @@ def llm(conversation_state: ConversationState):
     try:
         # Process the conversation
         result = app.controller.process_conversation(conversations) #pylint: disable=no-member
-        # Print only the response and suitability status, not the conversation history
         simplified_output = {
             "response": result["response"],
-            "suitable_for_search": result["suitable_for_search"]
+            "courses": result["courses"]
         }
         return simplified_output
     except Exception as e: #pylint: disable = broad-exception-caught
