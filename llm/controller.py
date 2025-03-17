@@ -51,18 +51,23 @@ class LLMController:
         
         # First assess if the conversation is suitable for semantic search
         is_suitable, missing_info = self._assess_quality(conversation)
-        
+        print("Is suitable for search: ", is_suitable)
+        print("Conversation history: ", conversation_history)
+        courses = []
         # Only generate a response if the conversation is NOT suitable for search
         response = None
         if not is_suitable:
-            response = self._generate_follow_up_questions(conversation, missing_info)
-        
+            response = self._generate_response(conversation, missing_info)
+        else:
+            search_context = self.create_search_context(conversation)
+            courses = self.get_courses_from_semantic_search(search_context)
+            response = self.generate_individual_justifications(conversation, courses)
         
         return {
             "response": response,
-            "suitable_for_search": is_suitable
+            "courses": courses
         }
-    
+
     def _generate_response(self, conversation):
         """
         Generate a response to the latest user input in the conversation.
