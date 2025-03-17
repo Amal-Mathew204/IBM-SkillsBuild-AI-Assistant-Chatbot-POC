@@ -57,7 +57,7 @@ class LLMController:
         # Only generate a response if the conversation is NOT suitable for search
         response = None
         if not is_suitable:
-            response = self._generate_response(conversation, missing_info)
+            response = self._generate_response(conversation)
         else:
             search_context = self.create_search_context(conversation)
             courses = self.get_courses_from_semantic_search(search_context)
