@@ -152,25 +152,6 @@
         "url": "https://skills.yourlearning.ibm.com/activity/SN-COURSE-V1:BIGDATAUNIVERSITY+DS0101EN+V1"
     },
     {
-        "title": "Python for Data Science",
-        "description": "This introduction to Python will kickstart your learning of Python for data science, as well as programming in general. This beginner-friendly Python course will take you from zero to programming in Python in a matter of hours. Upon its completion, you'll be able to write your own Python scripts. If you want to learn Python from scratch, this free course is for you.\n\nNote on grading - please read:\n\nReview questions are worth 50% of the mark, and the final exam is worth 50%. The course passing grade is 70%.\nReview Questions:\nHave no time limit. This should encourage participants to go back to material previously explained to find the correct answer.\nMultiple choice questions have two chances while True/False questions only have one chance.\nReview questions are marked per question. As soon as you answer a particular question, when the \u201cFinal check\u201d button appears, it means you will have no more chances after clicking that button, and your answer will be immediately marked and cannot be changed (ever). You will be able to see your grade progress at any time using the \u201cProgress\u201d tab.\nFinal Exam:\nHas a 1-hour time limit\nLike Review Questions, as you click on \u201cFinal check\u201d per question, you will be marked.",
-        "learning_hours": "20 hrs",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Applied Data Science with Python",
-            "Learning Domain",
-            "Other - Software engineering and programming",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Data Science Skill",
-            "Python (Programming Language) Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/SN-COURSE-V1:COGNITIVECLASS+PY0101EN+V3"
-    },
-    {
         "title": "R for Data Science",
         "description": "R is a powerful language for data analysis, data visualization, machine learning, statistics. Originally developed for statistical programming, it is now one of the most popular languages in data science. In this course, you'll be learning about the basics of R, and you'll end with the confidence to start writing your own R scripts.",
         "learning_hours": "3 hrs",
@@ -593,25 +574,6 @@
         "url": "https://skills.yourlearning.ibm.com/activity/PLAN-6D3C3FA8F0DA"
     },
     {
-        "title": "Data Analysis with Python",
-        "description": "In this course you will learn about: Data Acquisition How to Obtain Basic Insight From a Dataset Data",
-        "learning_hours": "3 hrs",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Applied Data Science with Python",
-            "Learning Domain",
-            "Other - Software engineering and programming",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Python (Programming Language) Skill",
-            "Data Analysis Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/SN-COURSE-V1:COGNITIVECLASS+DA0101EN+V1"
-    },
-    {
         "title": "Online data security | Khan Academy",
         "description": "This is the Online data security unit from an online, self-paced review course for Computer Science Principles. This unit introduces the concept of PII and the ways in which PII and other data can be tracked online (cookies, search history, browsing history, geolocation). Learn how attackers can gain access to data and devices with phishing, rogue access points, and malware, and see how you can protect yourself with encryption, secure protocols, strong passwords, and multifactor authentication.\n\nYou will find short instructional content offerings, videos, and sample quiz questions to practice what you've learned and \"level up\" on your skills.\n\nNote: It is designed to prepare for a U.S. college examination, however the computer science content is valuable more broadly.\n\nThe topics include:\nIntroduction to online data security\nPII (Personally identifiable information)\nUser data tracking\nCyber attacks\nData encryption techniques\nSecure Internet protocols\nUser authentication methods\n\nThe content is offered in English.\n\nThis learning activity is presented by Khan Academy.\n\nAfter you complete this activity, return to this page to select Mark complete for completion credit.",
         "learning_hours": "1 hr 30 mins",
@@ -643,17 +605,6 @@
         "url": "https://skills.yourlearning.ibm.com/activity/URL-0C1E03B880C1"
     },
     {
-        "title": "Earn it! Accept it! Share it! | IBM SkillsBuild",
-        "description": "Watch this short video explaining how to accept your digital credential and share it.",
-        "learning_hours": "2 mins",
-        "course_type": "Video",
-        "tags": [
-            "Learning Domain Primary",
-            "Professional skills"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/URL-CC7432BB7A8A?planId=PLAN-BC0FAEE8E439&sectionId=SECTION-A&planIdFromParentTab=PLAN-BC0FAEE8E439&sectionIdFromParentTab=SECTION-A&planIdForChildTab=PLAN-BC0FAEE8E439"
-    },
-    {
         "title": "Introduction to Data Concepts",
         "description": "In this course, you will become familiar with fundamental data concepts such as types of data, big data, the typical steps in the data analytics process, and data visualization.\n\nWhat you\u2019ll learn\nAfter completing this course, you should be able to:\nExplain the importance of data in a digital world\nDifferentiate between unstructured and structured data\nIdentify the purpose of a database\nDifferentiate between quantitative and qualitative data\nDescribe the five V\u2019s of big data\nDescribe the four types of data analytics\nExplain the work involved in each step of the data analysis process\nIdentify the purpose of a data visualization\nRecognize different charts to display data visualizations in the best way",
         "learning_hours": "1 hr 15 mins",
@@ -669,24 +620,6 @@
             "Data Analysis Skill"
         ],
         "url": "https://skills.yourlearning.ibm.com/activity/MDL-215?planId=PLAN-BC0FAEE8E439&sectionId=SECTION-B&planIdFromParentTab=PLAN-BC0FAEE8E439&sectionIdFromParentTab=SECTION-B&planIdForChildTab=PLAN-BC0FAEE8E439"
-    },
-    {
-        "title": "Data Science in Our World",
-        "description": "In this course, you will learn about the field of data science, including widely adopted methodologies, an example project as it moves through the steps of a data science methodology, the application of data science in our world, and the role of data scientists and their colleagues.\n\nWhat you\u2019ll learn\nAfter completing this course, you should be able to:\nDefine data science\nRecognize the importance of being curious to solve problems with data\nDifferentiate between the fields of data analytics and data science\nIdentify three widely adopted data science methodologies\nExplore a data project scenario and identify key tasks as it moves through a methodology\nRecognize industries and applications of data science that help solve problems and discover innovations\nCompare the roles and characteristics of a data analyst, data scientist, and data engineer",
-        "learning_hours": "2 hrs",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Data Fundamentals",
-            "Learning Domain",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Data Analysis Skill",
-            "Data Science Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/MDL-216?planId=PLAN-BC0FAEE8E439&sectionId=SECTION-B&planIdFromParentTab=PLAN-BC0FAEE8E439&sectionIdFromParentTab=SECTION-B&planIdForChildTab=PLAN-BC0FAEE8E439"
     },
     {
         "title": "Overview of Data Tools and Languages",
@@ -817,24 +750,6 @@
         "course_type": "eLearning",
         "tags": [],
         "url": "https://skills.yourlearning.ibm.com/activity/ISG-DL55007G"
-    },
-    {
-        "title": "Data Visualization with Python",
-        "description": "Data visualization is the graphical representation of data in order to interactively and efficiently convey insights to clients, customers, and stakeholders in general. It is a way to summarize your findings and display it in a form that facilitates interpretation and can help in identifying patterns or trends. In this course you will learn how to create interesting graphics and charts and customize them to make them more effective and more pleasing to your audience.\n\nNote on grading - please read:\n\nReview questions are worth 50% of the mark, and the final exam is worth 50%. The course passing grade is 70%.\nReview Questions:\nHave no time limit. This should encourage participants to go back to material previously explained to find the correct answer.\nMultiple choice questions have two chances while True/False questions only have one chance.\nReview questions are marked per question. As soon as you answer a particular question, when the \u201cFinal check\u201d button appears, it means you will have no more chances after clicking that button, and your answer will be immediately marked and cannot be changed (ever). You will be able to see your grade progress at any time using the \u201cProgress\u201d tab.\nFinal Exam:\nHas a 1-hour time limit\nLike Review Questions, as you click on \u201cFinal check\u201d per question, you will be marked.",
-        "learning_hours": "3 hrs",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Applied Data Science with Python",
-            "Learning Domain",
-            "Other - Software engineering and programming",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Python (Programming Language) Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/SN-COURSE-V1:COGNITIVECLASS+DV0101EN+V2"
     },
     {
         "title": "Data analysis | Khan Academy",
@@ -1021,17 +936,6 @@
             "Python (Programming Language) Skill"
         ],
         "url": "https://skills.yourlearning.ibm.com/activity/ILB-QPEKVQEKRYZG2KZ3"
-    },
-    {
-        "title": "Earn it! Accept it! Share it! | IBM SkillsBuild",
-        "description": "Watch this short video explaining how to accept your digital credential and share it.",
-        "learning_hours": "2 mins",
-        "course_type": "Video",
-        "tags": [
-            "Learning Domain Primary",
-            "Professional skills"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/URL-CC7432BB7A8A?planId=PLAN-BE0E24A0BA5C&sectionId=SECTION-A&planIdFromParentTab=PLAN-BE0E24A0BA5C&sectionIdFromParentTab=SECTION-A&planIdForChildTab=PLAN-BE0E24A0BA5C"
     },
     {
         "title": "Climate, Biodiversity, and Human Society (brought to you by AXA Climate School)",
