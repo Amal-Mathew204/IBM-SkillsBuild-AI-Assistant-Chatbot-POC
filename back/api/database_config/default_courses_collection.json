@@ -622,28 +622,6 @@
         "url": "https://skills.yourlearning.ibm.com/activity/MDL-215?planId=PLAN-BC0FAEE8E439&sectionId=SECTION-B&planIdFromParentTab=PLAN-BC0FAEE8E439&sectionIdFromParentTab=SECTION-B&planIdForChildTab=PLAN-BC0FAEE8E439"
     },
     {
-        "title": "Overview of Data Tools and Languages",
-        "description": "In this course, you will get an introduction to common data analysis and visualization tools so you\u2019re familiar with them and can recognize how data science projects use them.\n\nWhat you\u2019ll learn\nAfter completing this course, you should be able to:\nRecognize the value of collaborating and using open source in the field of data science\nIdentify the purpose of GitHub\nIdentify the purpose of a selection of common tools to analyze and visualize data, including:\nMicrosoft Excel\nGoogle Sheets\nStructured Query Language (SQL)\nPython\nIBM Watson Studio\nTableau\nMatplotlib\nIdentify factors businesses can consider when selecting a data transformation tool\nIdentify factors individuals can consider when selecting a data transformation tool",
-        "learning_hours": "1 hr 30 mins",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Data Fundamentals",
-            "Learning Domain",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Data Science Skill",
-            "Microsoft Excel Skill",
-            "Python (Programming Language) Skill",
-            "Data Analysis Skill",
-            "Tableau (Business Intelligence Software) Skill",
-            "SQL (Programming Language) Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/MDL-221?planId=PLAN-BC0FAEE8E439&sectionId=SECTION-B&planIdFromParentTab=PLAN-BC0FAEE8E439&sectionIdFromParentTab=SECTION-B&planIdForChildTab=PLAN-BC0FAEE8E439"
-    },
-    {
         "title": "Clean, Refine, and Visualize Data with IBM Watson Studio",
         "description": "In this course, you will practice cleaning, refining, and visualizing data, in a series of simulations, using IBM Watson Studio with the data refinery tool.\n\nWhat you\u2019ll learn\nAfter completing this course, you should be able to:\nExplain the purpose and key features of IBM Watson Studio\nSet up a new project in IBM Watson Studio\nImport a data set\nClean data using the data refinery tool\nRefine data using the data refinery tool\nCreate a data visualization\nConclude insights from a data visualization",
         "learning_hours": "1 hr 35 mins",
@@ -771,25 +749,6 @@
         "url": "https://skills.yourlearning.ibm.com/activity/URL-12D0B88BBD10"
     },
     {
-        "title": "Python for Data Science",
-        "description": "This introduction to Python will kickstart your learning of Python for data science, as well as programming in general. This beginner-friendly Python course will take you from zero to programming in Python in a matter of hours. Upon its completion, you'll be able to write your own Python scripts. If you want to learn Python from scratch, this free course is for you.\n\nNote on grading - please read:\n\nReview questions are worth 50% of the mark, and the final exam is worth 50%. The course passing grade is 70%.\nReview Questions:\nHave no time limit. This should encourage participants to go back to material previously explained to find the correct answer.\nMultiple choice questions have two chances while True/False questions only have one chance.\nReview questions are marked per question. As soon as you answer a particular question, when the \u201cFinal check\u201d button appears, it means you will have no more chances after clicking that button, and your answer will be immediately marked and cannot be changed (ever). You will be able to see your grade progress at any time using the \u201cProgress\u201d tab.\nFinal Exam:\nHas a 1-hour time limit\nLike Review Questions, as you click on \u201cFinal check\u201d per question, you will be marked.",
-        "learning_hours": "20 hrs",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Applied Data Science with Python",
-            "Learning Domain",
-            "Other - Software engineering and programming",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Data Science Skill",
-            "Python (Programming Language) Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/SN-COURSE-V1:COGNITIVECLASS+PY0101EN+V3?planId=PLAN-7A12E1671674&sectionId=SECTION-A&planIdFromParentTab=PLAN-7A12E1671674&sectionIdFromParentTab=SECTION-A&planIdForChildTab=PLAN-7A12E1671674"
-    },
-    {
         "title": "Machine Learning with Python",
         "description": "Are the phrases \u2018it is certain\u2019, \u2018yes you may rely on it\u2019, \u2018reply hazy try again\u2019 common in your predictions? Make room on your shelf for your magic eight ball and take this opportunity to see how Machine Learning can be a beneficial tool for predicting future trends. All with a bit more than oil and blue die. All signs point to yes as an indicator you will benefit from this experience.\n\nNote on grading - please read:\n\nReview questions are worth 50% of the mark, and the final exam is worth 50%. The course passing grade is 70%.\nReview Questions:\nHave no time limit. This should encourage participants to go back to material previously explained to find the correct answer.\nMultiple choice questions have two chances while True/False questions only have one chance.\nReview questions are marked per question. As soon as you answer a particular question, when the \u201cFinal check\u201d button appears, it means you will have no more chances after clicking that button, and your answer will be immediately marked and cannot be changed (ever). You will be able to see your grade progress at any time using the \u201cProgress\u201d tab.\nFinal Exam:\nHas a 1-hour time limit\nLike Review Questions, as you click on \u201cFinal check\u201d per question, you will be marked.",
         "learning_hours": "3 hrs",
@@ -861,25 +820,6 @@
             "Data"
         ],
         "url": "https://skills.yourlearning.ibm.com/activity/URL-15DEB16C3B53"
-    },
-    {
-        "title": "Your Future in Data: The Job Landscape",
-        "description": "In this course, you will learn about the data job market and projections, the responsibilities and skill sets of a data analyst and data scientist, and resources and learning opportunities so you can explore more.\n\nWhat you\u2019ll learn\nAfter completing this course, you should be able to:\nRecognize the global demand for data analysts and data scientists in the job market\nRecognize the future of the field of data analytics\nIdentify industries in which data professionals work\nIdentify the primary responsibilities of a data analyst and data scientist\nIdentify the skills that data professionals need\nIdentify the tools to know when starting out in the field\nIdentify resources to learn more and stay up to date in the field of data science",
-        "learning_hours": "50 mins",
-        "course_type": "eLearning",
-        "tags": [
-            "Badge Learning",
-            "Data Fundamentals",
-            "Learning Domain",
-            "Workplace skills - Workforce readiness",
-            "Technical skills - Data",
-            "Learning Domain Primary",
-            "Data",
-            "Lightcast Skills Taxonomy",
-            "Data Analysis Skill",
-            "Data Science Skill"
-        ],
-        "url": "https://skills.yourlearning.ibm.com/activity/MDL-218"
     },
     {
         "title": "The Art of Data Visualization | Off Book | PBS Digital Studios",
