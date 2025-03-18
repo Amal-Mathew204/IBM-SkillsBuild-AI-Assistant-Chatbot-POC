@@ -188,7 +188,6 @@ export default {
 
                 if (response.ok) {
                     let data = await response.json();
-                    print(data)
                     let courses = data.courses.map(course => course["title"]);
                     let timeCompletion = data.courses.map(course => course["learning_hours"]);
                     let courseType = data.courses.map(course => course["course_type"]);
