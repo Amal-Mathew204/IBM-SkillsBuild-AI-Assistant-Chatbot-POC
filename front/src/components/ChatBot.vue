@@ -14,9 +14,9 @@
                 </div>
                 <div class="messageBox" :style="settingStyle">
                     <!-- Course reccomendation card -->
-                    <div class="courseReccomendation" v-if="message.isApiResponse">
+                    <div class="courseReccomendation" v-if="message.type === 'received'">
                         <h4>{{ message.text }}</h4>
-                        <div v-if="message.courses.length !== 0">
+                        <div v-if="message.courses !== undefined && message.courses.length !== 0">
                             <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
                             <ul>
                                 <li v-for="(course, i) in message.courses" :key="i">
@@ -82,10 +82,13 @@ export default {
         // Defines settings values and messages
         return {
             message: "",
-            messages: this.fetchChat(),
+            messages: [],
             currentFontSize: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontSize + "px" || this.fontSize,
             currentFontColor: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontColor || this.fontColor,
         };
+    },
+    mounted() {
+        this.fetchChat();
     },
     computed: {
         //Creates dynnamic css object
@@ -149,8 +152,29 @@ export default {
                     }
                 });
                 if (response.ok) {                    
-                    content = response.json()
-                    return content["chat_history"]
+                    let content = await response.json();
+                    this.messages = content["chat_history"].map(message => {
+                        if (message.type === "recieved"){
+                            let courses = message.courses.map(course => course["title"]);
+                            let timeCompletion = message.courses.map(course => course["learning_hours"]);
+                            let courseType = message.courses.map(course => course["course_type"]);
+                            let courseURL = message.courses.map(course => course["url"]);
+                            let justifications = message.courses.map(course => course["justification"])
+                            return {
+                                text: message.text,
+                                type: "received",
+                                courses: courses,
+                                timeCompletion: timeCompletion,
+                                courseType: courseType,
+                                courseURL: courseURL,
+                                justifications: justifications,
+                                coursesReceived: message.courses
+                            }
+                        }
+                        else{
+                            return message
+                        }
+                    });
                 }
             } catch (error) {
                 console.log(error);
@@ -172,7 +196,6 @@ export default {
                     let justifications = data.courses.map(course => course["justification"])
                     let responseMessage = {
                         text: data["text_response"],
-                        isApiResponse: true,
                         type: "received",
                         courses: courses,
                         timeCompletion: timeCompletion,
@@ -238,7 +261,6 @@ export default {
                     let courseType = data.similar_courses.map(course => course["course_type"]);
                     let courseURL = data.similar_courses.map(course => course["url"]);
                     let responseMessage = {
-                        isApiResponse: true,
                         type: "received",
                         courses: courses,
                         timeCompletion: timeCompletion,
