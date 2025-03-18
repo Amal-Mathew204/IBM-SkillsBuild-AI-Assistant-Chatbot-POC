@@ -3,10 +3,17 @@ Module contains all the view functions for the api app
 """
 import json
 import os
+import django
+import django.middleware
+import django.middleware.csrf
 import requests
 from django.http import HttpRequest, JsonResponse
 
-
+def create_session(request: HttpRequest):
+    request.session.create()
+    request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
+    request.session["retrieved_courses"] = []
+    return django.middleware.csrf.get_token(request)
 def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
     """
     Method
@@ -19,26 +26,9 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
     # (so making early requests will cause exceptions)
     # and just do overall handling of bad requests
 
+    csrf_token = None
     if not request.session.session_key:
-        request.session.create()
-        request.session["input_count"]=0
-        request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
-    request.session["input_count"] = request.session["input_count"] + 1
-    print("REQUEST SESSION",request.session["input_count"])
-
-    # url: str = f"http://semanticsearch:{os.getenv('SEMANTIC_SEARCH_PORT')}/{query}/{k}"
-    # print(url)
-    # response = requests.get(url, timeout=30)
-    # print("Response")
-    # print(response.status_code)
-    # print(response.text)
-    # if response.status_code == 200:
-    #     courses = response.json()
-    #     return JsonResponse(status=200,
-    #                         data={
-    #                             "courses": courses,
-    #                             "text_response": "text response"
-    #                         })
+        csrf_token = create_session(request)
 
     request.session["conversation"].append({"role": "user", "content": f"{query}"})
     print(request.session["conversation"])
@@ -49,14 +39,26 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
 
     if response.status_code == 200:
         llm_response = response.json()
-        print(llm_response)
+        print("LLM Response: ", llm_response)
         request.session["conversation"].append({"role": "assistant", "content": f"{llm_response['response']}"})
-        return JsonResponse(status=200,
+        print(request.session["conversation"])
+        if llm_response["courses"] != []:
+            request.session["retrieved_courses"].append(llm_response["courses"])
+        response = JsonResponse(status=200,
                             data={"text_response": llm_response["response"],
                                   "courses": llm_response["courses"]})
-    return JsonResponse(status=500,
-                        data={"detail": "(Error communicating with interval servers"})
-
+    else:
+        response = JsonResponse(status=500, data={"message": "Error Communicating with Internal Server"})
+    request.session.modified = True
+    if csrf_token != None:
+        response.set_cookie(
+            'csrftoken',  
+            csrf_token,  
+            secure=True,
+            httponly=False,  
+            samesite='Lax'
+        )
+    return response
 
 def get_similar_courses(request: HttpRequest) -> JsonResponse:
     """
@@ -92,6 +94,7 @@ def reset_chat(request: HttpRequest):
     if request.method != "PUT":
         return
     request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
+    request.session["retrieved_courses"] = []
     return JsonResponse(status=200,
                             data={
                                 "message": "chat reset sucessfully"
@@ -101,24 +104,38 @@ def fetch_chat(request: HttpRequest):
     """
     Method
     """
-
     if request.method != "GET":
         return
+    csrf_token = None
     if not request.session.session_key:
-        request.session.create()
-        request.session["input_count"]=0
-        request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
+        csrf_token = create_session(request)
     formatted_conversation_history = []
+    count = 0
     for conversation in request.session["conversation"]:
+        courses = []
         if conversation["role"] != "system":
             type = "sent"
             text = conversation["content"]
+            if text == "None":
+                text = ""
+                courses = request.session["retrieved_courses"][count]
+                count+=1
             if conversation["role"] == "assistant":
                 type = "recieved"
-            formatted_conversation_history.append({"text":text, "type":type})
-    return JsonResponse(status=200,
+            formatted_conversation_history.append({"text":text, "type":type, "courses":courses })
+    response = JsonResponse(status=200,
                             data={
                                 "chat_history": formatted_conversation_history
                             })
+    if csrf_token != None:
+        response.set_cookie(
+            'csrftoken',  
+            csrf_token,  
+            secure=True,
+            httponly=False,  
+            samesite='Lax'
+        )
+    return response
+    
             
 
