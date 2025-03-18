@@ -84,4 +84,41 @@ def get_similar_courses(request: HttpRequest) -> JsonResponse:
                             })
     return JsonResponse(status=500,
                         data={"detail": "(Error communicating with interval servers"})
-    
+
+def reset_chat(request: HttpRequest):
+    """
+    Method
+    """
+    if request.method != "PUT":
+        return
+    request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
+    return JsonResponse(status=200,
+                            data={
+                                "message": "chat reset sucessfully"
+                            })
+
+def fetch_chat(request: HttpRequest):
+    """
+    Method
+    """
+
+    if request.method != "GET":
+        return
+    if not request.session.session_key:
+        request.session.create()
+        request.session["input_count"]=0
+        request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
+    formatted_conversation_history = []
+    for conversation in request.session["conversation"]:
+        if conversation["role"] != "system":
+            type = "sent"
+            text = conversation["content"]
+            if conversation["role"] == "assistant":
+                type = "recieved"
+            formatted_conversation_history.append({"text":text, "type":type})
+    return JsonResponse(status=200,
+                            data={
+                                "chat_history": formatted_conversation_history
+                            })
+            
+

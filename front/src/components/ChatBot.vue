@@ -82,9 +82,7 @@ export default {
         // Defines settings values and messages
         return {
             message: "",
-            messages: JSON.parse(localStorage.getItem("chatbotMessages")) || [
-                {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
-            ],
+            messages: this.fetchChat(),
             currentFontSize: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontSize + "px" || this.fontSize,
             currentFontColor: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontColor || this.fontColor,
         };
@@ -113,12 +111,50 @@ export default {
             });
         },
         //Method to reset chat
-        resetChat() {
-            localStorage.removeItem("chatbotMessages");
-            this.messages = [
-                {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
-            ];
-            localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
+        // resetChat() {
+        //     localStorage.removeItem("chatbotMessages");
+        //     this.messages = [
+        //         {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
+        //     ];
+        //     localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
+        // },
+        async resetChat() {
+            try {
+                const csrfToken = this.getCookie("csrftoken", document.cookie);
+                const response = await fetch("/api/resetchat/", {
+                    method: 'PUT',
+                    credentials: "same-origin",
+                    mode: 'cors',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    'Cookie': document.cookie,
+                    'x-csrftoken': csrfToken,
+                    }
+                });
+                if (response.ok) {                    
+                    this.messages = [
+                        {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
+                    ];
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        async fetchChat(){
+            try {
+                const response = await fetch("/api/fetchchat/", {
+                    method: 'GET',
+                    headers: {
+                    'Content-Type': 'application/json',
+                    }
+                });
+                if (response.ok) {                    
+                    content = response.json()
+                    return content["chat_history"]
+                }
+            } catch (error) {
+                console.log(error);
+            }
         },
         async apiResponse(userQuery) {
             try {
@@ -154,7 +190,6 @@ export default {
                             dataButton: true,
                         });
                     }
-                    localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
                     this.message = "";
                     //Auto scrolls messags to the bottom so its in view
                     this.$nextTick(() => {
@@ -212,7 +247,6 @@ export default {
                     };
                     this.messages.push(responseMessage);
                     console.log(data);
-                    localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
                     this.message = "";
                     //Auto scrolls messags to the bottom so its in view
                     this.$nextTick(() => {
