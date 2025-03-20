@@ -13,8 +13,16 @@
                     <img src="@/assets/chatbotIcon.png" class="messageIcon" />
                 </div>
                 <div class="messageBox" :style="settingStyle">
+                    <!--  if 'data science' is mentioned -->
+                    <div class="dataScienceMessage" v-if="message.type === 'received' && message.dataButton">
+                        <h4>{{ message.text }}</h4>
+                        <router-link to="/datascience">
+                            <button class="dataButton">Data Science</button>
+                        </router-link>
+                    </div>
                     <!-- Course reccomendation card -->
-                    <div class="courseReccomendation" v-if="message.type === 'received'">
+                    <div class="courseReccomendation" v-else-if="message.type === 'received'">
+                        
                         <h4>{{ message.text }}</h4>
                         <div v-if="message.courses !== undefined && message.courses.length !== 0">
                             <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
@@ -37,13 +45,6 @@
                         </div>
                     </div>
 
-                    <!--  if 'data science' is mentioned -->
-                    <div class="dataScienceMessage" v-else-if="message.dataButton">
-                        <h4>{{ message.text }}</h4>
-                        <router-link to="/datascience">
-                            <button class="dataButton">Data Science</button>
-                        </router-link>
-                    </div>
                     <div v-else>
                         {{ message.text }}
                     </div>
