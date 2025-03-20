@@ -317,7 +317,7 @@ export default {
     display: flex;
     width: 95%;
     flex-direction: column;
-    margin: 45px 0px;
+    margin-top: 60px;
     overflow-y: auto;
     flex-grow: 1;
 }
@@ -407,6 +407,7 @@ export default {
     bottom: 20px;
     border-radius: 25px;
     padding: 15px 10px;
+    margin-bottom: 1.2vh;
     box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
 }
 .messageInputBox input {
@@ -470,5 +471,11 @@ export default {
 .dataButton:hover, .similarCoursesButton:hover {
     background: linear-gradient(#0056b3, #004494);
     transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .messagesContainer {
+        margin: 45px 0px;
+    }
 }
 </style>
