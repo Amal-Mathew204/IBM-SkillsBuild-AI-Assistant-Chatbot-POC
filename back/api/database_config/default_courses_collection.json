@@ -363,7 +363,17 @@
         "description": "In this video, we\u2019ll talk about becoming a data analyst in 2020! More specifically, we\u2019ll look at who the data analyst is, what they do, how they fare in terms of salaries, and what skills and academic background you need to become one.\n\nThis video is presented by 365 Data Science.\n\nAfter you complete this activity, return to this page to select Mark complete for completion credit.\n\nNote: On the video toolbar, go to Settings, select Subtitles, select English, and then select Auto-Translate to enable subtitles in a language of your choice from the drop-down.",
         "learning_hours": "8 mins 31 s",
         "course_type": "Video",
-        "tags": [],
+        "tags": [
+            "Learning Domain",
+            "Technical Skills - Cloud",
+            "Technical skills - Data",
+            "Learning Domain Primary",
+            "Data",
+            "Lightcast Skills Taxonomy",
+            "Mathematics Skill",
+            "Data Science Skill",
+            "Artificial Intelligence Skill"
+        ],
         "url": "https://skills.yourlearning.ibm.com/activity/URL-5HLBV1WKBMO"
     },
     {
