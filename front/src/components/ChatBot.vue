@@ -20,16 +20,15 @@
                             <button class="dataButton">Data Science</button>
                         </router-link>
                     </div>
-                    <!-- Course reccomendation card -->
+                    <!-- Course recommendation card -->
                     <div class="courseReccomendation" v-else-if="message.type === 'received'">
-                        
                         <h4>{{ message.text }}</h4>
                         <div v-if="message.courses !== undefined && message.courses.length !== 0">
                             <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
                             <ul>
                                 <li v-for="(course, i) in message.courses" :key="i">
                                     <div v-if="message.justifications !== undefined">
-                                        <h4 >{{ message.justifications[i] }}</h4>
+                                        <h4>{{ message.justifications[i] }}</h4>
                                     </div>
                                     <a :href="message.courseURL[i]" target="_blank" class="courseLink">
                                         <strong>{{ course }}</strong>
@@ -39,12 +38,11 @@
                                         <li>Completion Time: {{ message.timeCompletion[i] }}</li>
                                     </ul>
                                     <!-- See Similar Courses Button -->
-                                    <button v-if= "message.coursesReceived !==undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
+                                    <button v-if="message.coursesReceived !== undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
                                 </li>
                             </ul>
                         </div>
                     </div>
-
                     <div v-else>
                         {{ message.text }}
                     </div>
@@ -53,13 +51,25 @@
                     <img src="@/assets/userIcon.png" class="messageIcon" />
                 </div>
             </div>
-        </div>
-        <!-- Message input box -->
-        <div class="messageInputBox">
-            <input type="text" placeholder="Type Message Here" v-model="message" @keyup.enter="sendMessage" :style="settingStyle" />
-            <button @click="sendMessage" class="sendButton" title="Send Message">
-                <img src="@/assets/sendIcon.png" class="sendIcon" />
-            </button>
+                <!-- Typing indicator for chatbot -->
+                <div v-if="loading" class="typingIndicator">
+                    <img src="@/assets/chatbotIcon.png" class="messageIcon typingIcon" />
+                    <span class="typingText" :style="`font-size: ${settingStyle.fontSize};`">Chatbot is typing</span>
+                    <div class="dots">
+                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                    </div>
+                </div>
+            <div>
+                <!-- Message input box -->
+                <div class="messageInputBox">
+                    <input type="text" v-model="message" @keyup.enter="sendMessage" :style="settingStyle" :disabled="loading"  :placeholder="loading ? 'Please wait until the chatbot has finished thinking' : 'Type Message Here'" />
+                    <button @click="sendMessage" class="sendButton" title="Send Message" :disabled="loading">
+                        <img src="@/assets/sendIcon.png" class="sendIcon" />
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -86,13 +96,14 @@ export default {
             messages: [],
             currentFontSize: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontSize + "px" || this.fontSize,
             currentFontColor: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontColor || this.fontColor,
+            loading: false, // Indicates if chatbot is typing
         };
     },
     mounted() {
         this.fetchChat();
     },
     computed: {
-        //Creates dynnamic css object
+        // Creates dynamic CSS object
         settingStyle() {
             return {
                 fontSize: this.currentFontSize,
@@ -101,27 +112,20 @@ export default {
         },
     },
     methods: {
-        //Method to send message
+        // Method to send message
         sendMessage() {
             console.log("send message");
-            if (!this.message.trim()) return; //helps stop sending empty messages
+            if (!this.message.trim()) return; // helps stop sending empty messages
             this.messages.push({ text: this.message, type: "sent" });
             localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
             this.apiResponse(this.message);
             this.message = "";
-            //Auto scrolls messags to the bottom so its in view
+            // Auto scrolls messages to the bottom so it's in view
             this.$nextTick(() => {
                 this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
             });
         },
-        //Method to reset chat
-        // resetChat() {
-        //     localStorage.removeItem("chatbotMessages");
-        //     this.messages = [
-        //         {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
-        //     ];
-        //     localStorage.setItem("chatbotMessages", JSON.stringify(this.messages));
-        // },
+
         async resetChat() {
             try {
                 const csrfToken = this.getCookie("csrftoken", document.cookie);
@@ -130,37 +134,38 @@ export default {
                     credentials: "same-origin",
                     mode: 'cors',
                     headers: {
-                    'Content-Type': 'application/json',
-                    'Cookie': document.cookie,
-                    'x-csrftoken': csrfToken,
+                        'Content-Type': 'application/json',
+                        'Cookie': document.cookie,
+                        'x-csrftoken': csrfToken,
                     }
                 });
-                if (response.ok) {                    
+                if (response.ok) {
                     this.messages = [
-                        {text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
+                        { text: "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?", type: "received" },
                     ];
                 }
             } catch (error) {
                 console.log(error);
             }
         },
-        async fetchChat(){
+
+        async fetchChat() {
             try {
                 const response = await fetch("/api/fetchchat/", {
                     method: 'GET',
                     headers: {
-                    'Content-Type': 'application/json',
+                        'Content-Type': 'application/json',
                     }
                 });
-                if (response.ok) {                    
+                if (response.ok) {
                     let content = await response.json();
                     this.messages = content["chat_history"].map(message => {
-                        if (message.type === "recieved"){
+                        if (message.type === "recieved") {
                             let courses = message.courses.map(course => course["title"]);
                             let timeCompletion = message.courses.map(course => course["learning_hours"]);
                             let courseType = message.courses.map(course => course["course_type"]);
                             let courseURL = message.courses.map(course => course["url"]);
-                            let justifications = message.courses.map(course => course["justification"])
+                            let justifications = message.courses.map(course => course["justification"]);
                             return {
                                 text: message.text,
                                 type: "received",
@@ -170,10 +175,10 @@ export default {
                                 courseURL: courseURL,
                                 justifications: justifications,
                                 coursesReceived: message.courses
-                            }
+                            };
                         }
-                        else{
-                            return message
+                        else {
+                            return message;
                         }
                     });
                 }
@@ -181,8 +186,11 @@ export default {
                 console.log(error);
             }
         },
+
         async apiResponse(userQuery) {
             try {
+                // Show the typing indicator while waiting for the response
+                this.loading = true;
                 const response = await fetch(`/api/chatbot/${userQuery.replace("%20", "")}/${5}`, {
                     method: "GET",
                 });
@@ -193,7 +201,7 @@ export default {
                     let timeCompletion = data.courses.map(course => course["learning_hours"]);
                     let courseType = data.courses.map(course => course["course_type"]);
                     let courseURL = data.courses.map(course => course["url"]);
-                    let justifications = data.courses.map(course => course["justification"])
+                    let justifications = data.courses.map(course => course["justification"]);
                     let responseMessage = {
                         text: data["text_response"],
                         type: "received",
@@ -213,28 +221,32 @@ export default {
                             dataButton: true,
                         });
                     }
+
+                    // Hide the typing indicator after the response is received
+                    this.loading = false;
+
                     this.message = "";
-                    //Auto scrolls messags to the bottom so its in view
+                    // Auto scrolls messages to the bottom so it's in view
                     this.$nextTick(() => {
                         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
                     });
                 }
             } catch (error) {
                 console.log(error);
+                this.loading = false; // Hide loading indicator on error
             }
         },
 
-        //Gets cookies from page
-        getCookie(cookieValueKey, cookies)
-            {
-                    const value = cookies.split('; ')
-                                        .map(cookie => cookie.split('='))
-                                        .find(([key]) => key === cookieValueKey);
-                    
-                return value ? decodeURIComponent(value[1]) : "";
-            },
+        // Gets cookies from the page
+        getCookie(cookieValueKey, cookies) {
+            const value = cookies.split('; ')
+                .map(cookie => cookie.split('='))
+                .find(([key]) => key === cookieValueKey);
 
-        async reverse_search (course_info){
+            return value ? decodeURIComponent(value[1]) : "";
+        },
+
+        async reverse_search(course_info) {
             try {
                 course_info = JSON.parse(JSON.stringify(course_info));
                 const csrfToken = this.getCookie("csrftoken", document.cookie);
@@ -243,19 +255,17 @@ export default {
                     credentials: "same-origin",
                     mode: 'cors',
                     headers: {
-                    'Content-Type': 'application/json',
-                    'Cookie': document.cookie,
-                    'x-csrftoken': csrfToken,
+                        'Content-Type': 'application/json',
+                        'Cookie': document.cookie,
+                        'x-csrftoken': csrfToken,
                     },
-                    body: JSON.stringify({  
+                    body: JSON.stringify({
                         "course": JSON.parse(JSON.stringify(course_info)),
                     })
                 });
-                
 
                 if (response.ok) {
                     let data = await response.json();
-                    console.log(data)
                     let courses = data.similar_courses.map(course => course["title"]);
                     let timeCompletion = data.similar_courses.map(course => course["learning_hours"]);
                     let courseType = data.similar_courses.map(course => course["course_type"]);
@@ -270,7 +280,7 @@ export default {
                     this.messages.push(responseMessage);
                     console.log(data);
                     this.message = "";
-                    //Auto scrolls messags to the bottom so its in view
+                    // Auto scrolls messages to the bottom so it's in view
                     this.$nextTick(() => {
                         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
                     });
@@ -473,6 +483,60 @@ export default {
     background: linear-gradient(#0056b3, #004494);
     transform: scale(1.05);
 }
+/* Styling for the typing indicator */
+.typingIndicator {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.typingText {
+    color: #007bff;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.dots {
+    display: flex;
+    align-items: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+    background-color: #007bff;
+    border-radius: 50%;
+    animation: typing 1.5s infinite ease-in-out;
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes typing {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
 
 @media (max-width: 768px) {
     .messagesContainer {
