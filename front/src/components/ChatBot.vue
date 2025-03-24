@@ -17,7 +17,7 @@
                     <div class="dataScienceMessage" v-if="message.type === 'received' && message.dataButton">
                         <h4>{{ message.text }}</h4>
                         <router-link to="/datascience">
-                            <button class="dataButton">Data Science</button>
+                            <button class="dataButton" :style="`font-size: ${settingStyle.fontSize}`">Data Science</button>
                         </router-link>
                     </div>
                     <!-- Course recommendation card -->
@@ -27,18 +27,18 @@
                             <h4>{{ message.coursesReceived ? 'Recommended Courses:' : 'Similar Courses:' }}</h4>
                             <ul>
                                 <li v-for="(course, i) in message.courses" :key="i">
-                                    <div v-if="message.justifications !== undefined">
-                                        <h4>{{ message.justifications[i] }}</h4>
-                                    </div>
                                     <a :href="message.courseURL[i]" target="_blank" class="courseLink">
-                                        <strong>{{ course }}</strong>
+                                        <h4 class ="courseTitle">{{ course }}</h4>
                                     </a>
+                                    <div v-if="message.justifications !== undefined">
+                                        <h4 :style="settingStyle">{{ message.justifications[i] }}</h4>
+                                    </div>
                                     <ul>
                                         <li>Type: {{ message.courseType[i] }}</li>
                                         <li>Completion Time: {{ message.timeCompletion[i] }}</li>
                                     </ul>
                                     <!-- See Similar Courses Button -->
-                                    <button v-if="message.coursesReceived !== undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton">See Similar Courses</button>
+                                    <button v-if="message.coursesReceived !== undefined" @click="reverse_search(message.coursesReceived[i])" class="similarCoursesButton" :style="`font-size: ${settingStyle.fontSize}`" >See Similar Courses</button>
                                 </li>
                             </ul>
                         </div>
@@ -397,6 +397,11 @@ export default {
 }
 .courseLink:hover {
     text-decoration: underline;
+}
+
+.courseTitle{
+    color: #007bff;
+    font-weight: bolder;
 }
 
 .courseReccomendation ul ul {
