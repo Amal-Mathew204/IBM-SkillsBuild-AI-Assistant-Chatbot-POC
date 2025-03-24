@@ -365,14 +365,13 @@
         "course_type": "Video",
         "tags": [
             "Learning Domain",
-            "Technical Skills - Cloud",
             "Technical skills - Data",
             "Learning Domain Primary",
             "Data",
             "Lightcast Skills Taxonomy",
             "Mathematics Skill",
-            "Data Science Skill",
-            "Artificial Intelligence Skill"
+            "Data Analysis Skill",
+            "Data Science Skill"
         ],
         "url": "https://skills.yourlearning.ibm.com/activity/URL-5HLBV1WKBMO"
     },
@@ -849,7 +848,10 @@
         "description": "Data jsou v\u0161ude kolem n\u00e1s a jsou nezbytnou sou\u010d\u00e1st\u00ed na\u0161ich \u017eivot\u016f. V t\u00e9to sekci najde\u0161 kurzy, kter\u00e9 se zab\u00fdvaj\u00ed jak datovou anal\u00fdzou, tak oblast\u00ed data science (neboli datovou v\u011bdou). D\u00edky tomu zjist\u00ed\u0161, pro\u010d je anal\u00fdza dat d\u016fle\u017eit\u00e1, z\u00edsk\u00e1\u0161 pov\u011bdom\u00ed o tom, jak\u00e9 existuj\u00ed typy datab\u00e1z\u00ed, sezn\u00e1m\u00ed\u0161 se s prac\u00ed datov\u00e9ho analytika nebo se rovnou nau\u010d\u00ed\u0161 pracovat s daty s pomoc\u00ed Pythonu.",
         "learning_hours": "",
         "course_type": "Learning Plan",
-        "tags": [],
+        "tags": [
+            "Learning Domain Primary",
+            "Data"
+        ],
         "url": "https://skills.yourlearning.ibm.com/activity/PLAN-9EED9F84661B"
     },
     {
