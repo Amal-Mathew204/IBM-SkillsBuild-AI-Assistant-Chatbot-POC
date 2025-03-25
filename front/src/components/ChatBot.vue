@@ -53,12 +53,12 @@
             </div>
                 <!-- Typing indicator for chatbot -->
                 <div v-if="loading" class="typingIndicator">
-                    <img src="@/assets/chatbotIcon.png" class="messageIcon typingIcon" />
+                    <img src="@/assets/chatbotIcon.png" class="messageIcon" />
                     <span class="typingText" :style="`font-size: ${settingStyle.fontSize};`">Chatbot is typing</span>
-                    <div class="dots">
-                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
-                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
-                        <span class="dot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                    <div class="typingAnimation">
+                        <span class="typingDot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                        <span class="typingDot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
+                        <span class="typingDot" :style="`width: calc(${settingStyle.fontSize} - 7px); height: calc(${settingStyle.fontSize} - 7px);`"></span>
                     </div>
                 </div>
             <div>
@@ -494,21 +494,17 @@ export default {
     align-items: center;
     justify-content: flex-start;
     margin-top: 10px;
-    padding-left: 20px;
 }
-
 .typingText {
     color: #007bff;
     font-size: 16px;
     margin-right: 10px;
 }
-
-.dots {
+.typingAnimation {
     display: flex;
     align-items: center;
 }
-
-.dot {
+.typingDot {
     width: 10px;
     height: 10px;
     margin: 0 3px;
@@ -516,16 +512,13 @@ export default {
     border-radius: 50%;
     animation: typing 1.5s infinite ease-in-out;
 }
-
-.dot:nth-child(1) {
+.typingDot:nth-child(1) {
     animation-delay: 0s;
 }
-
-.dot:nth-child(2) {
+.typingDot:nth-child(2) {
     animation-delay: 0.3s;
 }
-
-.dot:nth-child(3) {
+.typingDot:nth-child(3) {
     animation-delay: 0.6s;
 }
 
@@ -540,8 +533,6 @@ export default {
         opacity: 0;
     }
 }
-
-
 
 @media (max-width: 768px) {
     .messagesContainer {
