@@ -53,6 +53,7 @@ class LLMController:
         is_suitable, missing_info = self._assess_quality(conversation)
         print("Is suitable for search: ", is_suitable)
         print("Conversation history: ", conversation_history)
+        print("Missing Info: ", missing_info)
         courses = []
         # Only generate a response if the conversation is NOT suitable for search
         response = None
@@ -396,3 +397,78 @@ class LLMController:
         assistant_reply = output.split("<|start_header_id|>assistant<|end_header_id|>")[-1].split("<|eot_id|>")[0].strip()
         
         return assistant_reply
+
+    def _assess_quality_new(self, conversation):
+        """
+        Assess if the conversation is suitable for semantic search by checking if all required information is provided
+        using the LLM's ability to evaluate content, without generating follow-up questions.
+        
+        Args:
+            conversation (list): List of message objects with role and content
+        
+        Returns:
+            bool, dict: Whether the conversation is suitable for semantic search and a dictionary of missing information
+        """
+            # Extract user content from the conversation
+        user_content = ' '.join([turn["content"] for turn in conversation if turn["role"] == "user"])
+
+        # Refined prompt for the LLM to assess the conversation
+        prompt = (
+            f"Based on the following conversation, assess if the user has provided sufficient information about the following categories:\n"
+            f"1. Education\n"
+            f"2. Career Goals (Specific to Data Science)\n"
+            f"3. Knowledge (Technical Skills for Data Science)\n\n"
+            f"Here is the conversation:\n\n{user_content}\n\n"
+            f"Answer only with the following format:\n"
+            f"Education: Provided or Education: Missing\n"
+            f"Career Goals: Provided or Career Goals: Missing\n"
+            f"Knowledge: Provided or Knowledge: Missing\n\n"
+            f"To assess the categories:\n"
+            
+            # Education assessment
+            f"1. Education: Look for mentions of academic qualifications or certifications.\n"
+            f"   Examples: Bachelor’s, Master’s, PhD, data science certifications, etc.\n\n"
+            
+            # Career Goals assessment (Specific to Data Science)
+            f"2. Career Goals: Look for mentions of career goals in data science, AI, machine learning, etc.\n"
+            f"   Examples: Data scientist, machine learning engineer, AI researcher, etc.\n\n"
+            
+            # Knowledge (Technical Skills) assessment
+            f"3. Knowledge: Look for mentions of technical skills, programming languages, tools, or techniques in data science.\n"
+            f"   Examples:\n"
+            f"- Programming languages (Python, R, SQL, Scala)\n"
+            f"- Data science tools (TensorFlow, PyTorch, Pandas, NumPy, Scikit-learn)\n"
+            f"- Machine learning techniques (e.g., regression, classification)\n"
+            f"- Big data tools (Hadoop, Spark)\n\n"
+            f"Do not generate any additional conversation or explanations. Just provide the assessment in the requested format."
+        )
+
+        # Tokenize and pass the refined prompt to the LLM for evaluation
+        inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs["input_ids"],
+                max_new_tokens=256,
+                do_sample=False,  # Ensure deterministic output
+                top_p=0.9
+            )
+
+        # Decode the LLM's response
+        output = self.tokenizer.decode(outputs[0], skip_special_tokens=False)
+        output = output.split(prompt)[1]
+        print("Output: ", output)
+        # Initialize a dictionary to hold missing information details
+        missing_info = {}
+
+        # Process the LLM's response (we assume it returns in the correct format)
+        if "Education: Missing" in output:
+            missing_info["education"] = "Can you tell me about your educational background?"
+        if "Career Goals: Missing" in output:
+            missing_info["career_goals"] = "What is your desired career role or industry?"
+        if "Knowledge: Missing" in output:
+            missing_info["knowledge"] = "What technical skills or programming languages are you familiar with?"
+
+        # Check if the conversation is suitable for semantic search (i.e., all required information is provided)
+        content_suitable = not any(key in missing_info for key in ["education", "career_goals", "knowledge"])
+
+        return content_suitable, missing_info
