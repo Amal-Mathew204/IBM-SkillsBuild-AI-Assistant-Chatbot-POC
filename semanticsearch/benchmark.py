@@ -4,6 +4,7 @@ Benchmark Module Observes the Memory Usage and Process Time for the Semantic Sea
 import os
 import time
 import psutil
+import gc
 from sts_module.database.mongo_db_interface import MongoDBDatabase
 from sts_module.embedding_module.controller import EmbeddingController
 
@@ -48,6 +49,24 @@ def get_process_memory() -> int:
     return psutil.Process(os.getpid()).memory_info().rss / 1024 / 1024
 #endregion
 
+def get_virtual_memory() -> int:
+    """
+    Method returns the virtual memory usage of the system
+
+    Returns:
+    int: Virtual Memory Usage in MB
+    """
+    return psutil.virtual_memory().total / 1024 / 1024
+
+def get_swap_memory() -> int:
+    """
+    Method returns the total swap memory usage of the system
+
+    Returns:
+    int: Swap Memory Usage in MB
+    """
+    return psutil.swap_memory().total / 1024 / 1024
+
 #region Embedded Dataset Creation
 def observe_memory_embedded_dataset_setup() -> tuple:
     """
@@ -57,15 +76,24 @@ def observe_memory_embedded_dataset_setup() -> tuple:
     Returns:
        tuple (int, int): (Memory Usage (MB), Process Time (s))
     """
-
+    # invoke garbage collection
+    gc.collect()
     prev_memory = get_process_memory()
-    prev_time = time.process_time()
+    prev_virtual_memory = get_virtual_memory()
+    prev_swap_memory = get_swap_memory()
+    prev_time = time.time()
+
     controller = EmbeddingController(courses_database, embedded_database)
     controller.create_embedded_dataset()
-    current_time = time.process_time()
+    current_time = time.time()
+
+    # invoke garbage collection
+    gc.collect()
     total_memory_usage =  abs(get_process_memory() - prev_memory)
-    total_process_time = current_time - prev_time
-    return (total_memory_usage, total_process_time)
+    total_virutal_memory_change = abs(get_virtual_memory() - prev_virtual_memory)
+    total_swap_memory_change = abs(get_swap_memory() - prev_swap_memory)
+    total_time = current_time - prev_time
+    return (total_memory_usage, total_virutal_memory_change, total_swap_memory_change, total_time)
 
 
 #endregion
@@ -74,13 +102,18 @@ def observe_memory_embedded_dataset_setup() -> tuple:
 #endregion
 rounds: int = 10
 total_mem_usage: int = 0
-total_process_cpu_time: int = 0
+total_time: int = 0
+total_virutal_memory_change: int = 0
+total_swap_memory_change: int = 0
 for i in range(rounds):
     print("Round: ", i+1)
-    memory_usage, process_time = observe_memory_embedded_dataset_setup()
+    memory_usage, virtual_memory_change, swap_memory_change, process_time = observe_memory_embedded_dataset_setup()
     total_mem_usage+=memory_usage
-    total_process_cpu_time+=process_time
+    total_virutal_memory_change+=virtual_memory_change
+    total_swap_memory_change+=swap_memory_change
+    total_time+=process_time
 
 print("Embedded Dataset Creation Average Memory Usage (MB): ", total_mem_usage/rounds)
-print("Embedded Dataset Creation Average Process (CPU Execution) Time (Seconds): ",
-                                                        total_process_cpu_time/rounds)
+print("Embedded Dataset Creation Average Virtual Memory Change (MB): ", total_virutal_memory_change/rounds)
+print("Embedded Dataset Creation Average Swap Memory Change (MB): ", total_swap_memory_change/rounds)
+print("Embedded Dataset Creation Average Time (Seconds): ", total_time/rounds)
