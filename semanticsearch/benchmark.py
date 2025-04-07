@@ -2,9 +2,11 @@
 Benchmark Module Observes the Memory Usage and Process Time for the Semantic Search Module
 """
 import os
+from pandas import DataFrame
 import time
 import psutil
 import gc
+from sts_module.database.database_helper import DatabaseHelper
 from sts_module.database.mongo_db_interface import MongoDBDatabase
 from sts_module.embedding_module.controller import EmbeddingController
 
@@ -68,7 +70,7 @@ def get_swap_memory() -> int:
     return psutil.swap_memory().total / 1024 / 1024
 
 #region Embedded Dataset Creation
-def observe_memory_embedded_dataset_setup() -> tuple:
+def observe_memory_embedded_dataset_setup(courses) -> tuple:
     """
     This method observes the memory usage and process time (CPU execution time) for 
     creating an embedded dataset and storing it into the projects database
@@ -84,9 +86,10 @@ def observe_memory_embedded_dataset_setup() -> tuple:
     prev_time = time.time()
 
     controller = EmbeddingController(courses_database, embedded_database)
-    controller.create_embedded_dataset()
+    embedded_dataset = controller.create_embedding(courses)
     current_time = time.time()
-
+    del controller
+    del embedded_dataset
     # invoke garbage collection
     gc.collect()
     total_memory_usage =  abs(get_process_memory() - prev_memory)
@@ -94,26 +97,13 @@ def observe_memory_embedded_dataset_setup() -> tuple:
     total_swap_memory_change = abs(get_swap_memory() - prev_swap_memory)
     total_time = current_time - prev_time
     return (total_memory_usage, total_virutal_memory_change, total_swap_memory_change, total_time)
-
-
 #endregion
 
-#region Semantic Search
-#endregion
-rounds: int = 10
-total_mem_usage: int = 0
-total_time: int = 0
-total_virutal_memory_change: int = 0
-total_swap_memory_change: int = 0
-for i in range(rounds):
-    print("Round: ", i+1)
-    memory_usage, virtual_memory_change, swap_memory_change, process_time = observe_memory_embedded_dataset_setup()
-    total_mem_usage+=memory_usage
-    total_virutal_memory_change+=virtual_memory_change
-    total_swap_memory_change+=swap_memory_change
-    total_time+=process_time
+if __name__ == "__main__":
+    courses = DatabaseHelper.load_collection_data_json(courses_database)
+    memory_usage, virtual_memory_change, swap_memory_change, process_time = observe_memory_embedded_dataset_setup(courses)
 
-print("Embedded Dataset Creation Average Memory Usage (MB): ", total_mem_usage/rounds)
-print("Embedded Dataset Creation Average Virtual Memory Change (MB): ", total_virutal_memory_change/rounds)
-print("Embedded Dataset Creation Average Swap Memory Change (MB): ", total_swap_memory_change/rounds)
-print("Embedded Dataset Creation Average Time (Seconds): ", total_time/rounds)
+    print("Embedded Dataset Creation Memory Usage (MB): ", memory_usage)
+    print("Embedded Dataset Creation Virtual Memory Change (MB): ", virtual_memory_change)
+    print("Embedded Dataset Creation Swap Memory Change (MB): ", swap_memory_change)
+    print("Embedded Dataset Creation Execution Time (Seconds): ", process_time)
