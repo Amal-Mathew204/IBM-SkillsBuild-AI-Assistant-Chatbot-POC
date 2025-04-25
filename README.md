@@ -1,4 +1,4 @@
-# WIP Project: AI Assistant for IBM SkillsBuild – for Data Science 
+# WIP Final-Year Project 2024/25 (Group 2): AI Assistant for IBM SkillsBuild – for Data Science 
 
 ## Overview
 This project is a AI Assistant Chatbot designed for the IBM SkillsBuild platform, providing interactive responses and support for users. It helps users find appropriate data science courses based on their interests, skills, and career goals within the IBM SkillsBuild platform. By analyzing user queries, the chatbot suggests relevant learning paths and resources to enhance their learning experience.  
@@ -35,16 +35,18 @@ docker compose up --build
 The logs for each container can be viewed through Docker Desktop or using the following command
 ```sh
 
-# Stop and Remove Existing Containers and Volumes
-docker compose down -v
-
 # Check logs to ensure all services are running
 docker compose logs -f
+```
+To shutdown the containers and close the application use the following commands:
+```sh
 
 # Stop the containers when needed
 docker compose down
-```
+# Stop and Remove Existing Containers and Volumes
+docker compose down -v
 
+```
 
 
 ## Notes
@@ -74,6 +76,12 @@ For more details, refer to the [Docker Compose documentation](https://docs.docke
 - Use MongoDB Compass to view the Database
 - MongoDB Compass is a GUI tool for viewing the MongoDB databases, allowing visualization, querying, and data manipulation.
 - For more details see [MongoDB Compass](https://www.mongodb.com/products/tools/compass)
+
+## Contributors
+* [Mohamed Zahidur Rahman](https://github.com/Zahid2104)
+* [Amal Mathew](https://github.com/Amal-Mathew204)
+* [Aamir Naje](https://github.com/aamirnaje)
+* [Aylin Turan](https://github.com/Aylinx13)
 
 
 
