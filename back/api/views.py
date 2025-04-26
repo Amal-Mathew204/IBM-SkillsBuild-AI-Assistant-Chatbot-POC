@@ -14,17 +14,14 @@ def create_session(request: HttpRequest):
     request.session["conversation"]=[{"role": "assistant", "content": "Welcome to the IBM Skills Build data science course assistant! To help you find the most relevant courses, I'd like to know about your educational background. Could you tell me about any degrees or qualifications you've completed?"}]
     request.session["retrieved_courses"] = []
     return django.middleware.csrf.get_token(request)
+
 def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
     """
-    Method
+    Method: For receving LLM messages 
     """
-    #TODO change to invalid method response
+
     if request.method != "GET":
         return
-    # TODO valididate inputs
-    # also do exception handling cause ibr the semantic search container is slow
-    # (so making early requests will cause exceptions)
-    # and just do overall handling of bad requests
 
     csrf_token = None
     if not request.session.session_key:
@@ -62,15 +59,12 @@ def chatbot(request: HttpRequest, query: str, k: int) -> JsonResponse:
 
 def get_similar_courses(request: HttpRequest) -> JsonResponse:
     """
-    Method
+    Method: Uses reverse search to get similar courses after course reccomendations
     """
-    #TODO change to invalid method response
+
     if request.method != "POST":
         return
-    # TODO valididate inputs
-    # also do exception handling
-    # (so making early requests will cause exceptions)
-    # and just do overall handling of bad requests
+
     course_info = json.loads(request.body.decode("utf-8"))["course"]
     url: str = f"http://reversesearch:{os.getenv('REVERSE_SEARCH_PORT')}/"
     print(url)
@@ -89,7 +83,7 @@ def get_similar_courses(request: HttpRequest) -> JsonResponse:
 
 def reset_chat(request: HttpRequest):
     """
-    Method
+    Method: Erases converstaion and sets converstion default values
     """
     if request.method != "PUT":
         return
@@ -102,7 +96,7 @@ def reset_chat(request: HttpRequest):
 
 def fetch_chat(request: HttpRequest):
     """
-    Method
+    Method: Fetches converstaion history after a page refresh
     """
     if request.method != "GET":
         return
@@ -136,6 +130,3 @@ def fetch_chat(request: HttpRequest):
             samesite='Lax'
         )
     return response
-    
-            
-

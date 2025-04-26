@@ -13,7 +13,7 @@
                     <img src="@/assets/chatbotIcon.png" class="messageIcon" />
                 </div>
                 <div class="messageBox" :style="settingStyle">
-                    <!--  if 'data science' is mentioned -->
+                    <!--  Data Science message prompt -->
                     <div class="dataScienceMessage" v-if="message.type === 'received' && message.dataButton">
                         <h4>{{ message.text }}</h4>
                         <router-link to="/datascience">
@@ -96,7 +96,7 @@ export default {
             messages: [],
             currentFontSize: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontSize + "px" || this.fontSize,
             currentFontColor: JSON.parse(localStorage.getItem("chatbotSettings"))?.fontColor || this.fontColor,
-            loading: false, // Indicates if chatbot is typing
+            loading: false, // chatbot is typing = false so animation does not show
         };
     },
     mounted() {
@@ -126,6 +126,7 @@ export default {
             });
         },
 
+        // Method to reset converstaion history to default
         async resetChat() {
             try {
                 const csrfToken = this.getCookie("csrftoken", document.cookie);
@@ -149,6 +150,7 @@ export default {
             }
         },
 
+        // Method to fetch chat after a refresh
         async fetchChat() {
             try {
                 const response = await fetch("/api/fetchchat/", {
@@ -187,9 +189,10 @@ export default {
             }
         },
 
+        //Method for fetching api response 
         async apiResponse(userQuery) {
             try {
-                // Show the typing indicator while waiting for the response
+                // typing indiactor set to true
                 this.loading = true;
                 const response = await fetch(`/api/chatbot/${userQuery.replace("%20", "")}/${5}`, {
                     method: "GET",
@@ -214,6 +217,7 @@ export default {
                     };
                     this.messages.push(responseMessage);
 
+                    //If course mentions data science
                     if (courses.some(course => course.toLowerCase().includes("data science"))) {
                         this.messages.push({
                             type: "received",
@@ -222,10 +226,10 @@ export default {
                         });
                     }
 
-                    // Hide the typing indicator after the response is received
+                    // Hide typing indicator and text input is blank 
                     this.loading = false;
-
                     this.message = "";
+
                     // Auto scrolls messages to the bottom so it's in view
                     this.$nextTick(() => {
                         this.$refs.messagesContainer.scrollTop = this.$refs.messagesContainer.scrollHeight;
@@ -398,17 +402,14 @@ export default {
 .courseLink:hover {
     text-decoration: underline;
 }
-
 .courseTitle{
     color: #007bff;
     font-weight: bolder;
 }
-
 .courseReccomendation ul ul {
     margin-top: 5px;
     padding-left: 15px;
 }
-
 .courseReccomendation ul ul li {
     font-size: inherit;
 }
@@ -457,7 +458,7 @@ export default {
     transform: scale(1.3);
 }
 
-/* Router Message Container */
+/* Data Science prompt styling*/
 .dataScienceMessage {
     background: #f9f9f9;
     padding: 12px;
@@ -483,11 +484,11 @@ export default {
     transition: all 0.2s ease-in-out;
     text-decoration: none;
 }
-
 .dataButton:hover, .similarCoursesButton:hover {
     background: linear-gradient(#0056b3, #004494);
     transform: scale(1.05);
 }
+
 /* Styling for the typing indicator */
 .typingIndicator {
     display: flex;
@@ -521,7 +522,6 @@ export default {
 .typingDot:nth-child(3) {
     animation-delay: 0.6s;
 }
-
 @keyframes typing {
     0% {
         opacity: 0;
@@ -534,6 +534,7 @@ export default {
     }
 }
 
+/* Mobile CSS */
 @media (max-width: 768px) {
     .messagesContainer {
         margin: 45px 0px;
