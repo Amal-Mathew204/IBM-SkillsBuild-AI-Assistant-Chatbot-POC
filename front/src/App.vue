@@ -207,7 +207,7 @@ export default {
   overflow-y: auto;
 }
 
-/* Responsive Design for Mobile Screens */
+/* Mobile CSS */
 @media (max-width: 768px) {
   .navBar {
     width: 100%;
