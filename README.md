@@ -20,6 +20,9 @@ Ensure you have the following installed:
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
+## Configuration
+The `.env` file contains the template enviroment variables to run the AI Assistant Chatbot Application for **LOCAL HOST DEPLOYMENT**
+
 
 ## Run the Project
 To run the project run the following commands ensuring terminal is pointing at the projects root directory:
