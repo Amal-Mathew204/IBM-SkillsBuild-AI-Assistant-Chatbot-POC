@@ -1,7 +1,7 @@
 # WIP Final-Year Project 2024/25 (Group 2): AI Assistant for IBM SkillsBuild – for Data Science 
 
 ## Overview
-This project is a AI Assistant Chatbot designed for the IBM SkillsBuild platform, providing interactive responses and support for users. It helps users find appropriate data science courses based on their interests, skills, and career goals within the IBM SkillsBuild platform. By analyzing user queries, the chatbot suggests relevant learning paths and resources to enhance their learning experience.  
+This project is a POC (Proof of Concept) AI Assistant Chatbot designed for the IBM SkillsBuild platform, providing interactive responses and support for users. It helps users find appropriate data science courses based on their interests, skills, and career goals within the IBM SkillsBuild platform. By analyzing user queries, the chatbot suggests relevant learning paths and resources to enhance their learning experience.  
 
 
 The project is a multi container application, with the following components:
