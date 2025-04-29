@@ -39,7 +39,17 @@ http://api.url/docs
 ```
 
 ## Configuration
-The `.env` file contains the template enviroment variables to run the semantic search module as an internal container for the AI Assistant Chatbot Application for **LOCAL HOST DEPLOYMENT**
+This project has the following enviroment variables:
+- **MONGO_USER**: Username to Applications MongoDB Database Server Account
+- **MONGO_PASSWORD**: Password to Applications MongoDB Database Server Account
+- **MONGO_CHATBOT_DATABASE**: Name of Database
+- **MONGO_COURSE_COLLECTION**: Name of Courses Collection
+- **MONGO_EMBEDDED_DATASET_COLLECTION**: Name of Embedded Dataset Collection
+- **HOST**: Hostname of Deployed Application
+- **MONGO_CONTAINER**: Docker Container Name of MongoDB Server
+- **MONGO_PORT**: Docker Container Port of MongoDB Server
+- **MONGO_AUTH_MECHANISM**: MongoDB Server Authentication Mechanism
+- **SEMANTIC_SEARCH_PORT**: Assigned Port of Semantic Search Module Container
 
 ## Dependencies
 To run the Semantic Search Module, the application is required to connect to a MongoDB Database Server. The implementation is designed to use the database connections to source the courses available to recommend to the user and to cache an embedded dataset of courses. 
